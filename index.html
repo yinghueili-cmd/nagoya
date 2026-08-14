@@ -1,0 +1,1805 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>名古屋六日獨旅 · 御朱印帖</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#1C2333; --bg-deep:#141926;
+    --surface:#242C40; --surface2:#2C3550;
+    --gold:#C9A227; --gold-light:#E8C468;
+    --miso:#9C4A3C; --miso-light:#C06A5B;
+    --cream:#F3EEDD; --muted:#9AA1B8;
+    --line: rgba(201,162,39,0.22);
+    --day-accent: var(--gold);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:radial-gradient(circle at 50% -10%, #2A3350 0%, var(--bg) 45%, var(--bg-deep) 100%);
+    color:var(--cream); font-family:'Noto Sans TC',sans-serif; min-height:100vh; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.serif{ font-family:'Noto Serif TC',serif; }
+  a{ color:inherit; }
+  ::selection{ background:var(--gold); color:#1C2333; }
+  #app{ max-width:520px; margin:0 auto; min-height:100vh; position:relative; padding-bottom:calc(80px + var(--safe-bottom)); }
+
+  .hero{ position:relative; overflow:hidden; }
+  .hero-photo{
+    position:absolute; inset:0; z-index:0;
+    background:url('images/nagoya_skyline.jpeg') center 38%/cover no-repeat;
+  }
+  .hero-photo::after{
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(20,25,38,.55) 0%, rgba(20,25,38,.72) 55%, rgba(20,25,38,.96) 100%);
+  }
+  .topbar{ position:relative; z-index:1; padding:46px 20px 26px; display:flex; align-items:flex-end; justify-content:space-between; }
+  .topbar .eyebrow{ font-size:11px; letter-spacing:.18em; color:var(--gold-light); text-transform:uppercase; }
+  .topbar .name{ font-size:24px; font-weight:700; letter-spacing:.02em; margin-top:3px; text-shadow:0 2px 12px rgba(0,0,0,.5); }
+  .topbar .hero-sub{ font-size:11px; color:rgba(243,238,221,.75); margin-top:5px; letter-spacing:.04em; }
+  .topbar .kinshachi{ font-size:26px; filter:drop-shadow(0 0 6px rgba(201,162,39,.5)); }
+  .tab-photo{
+    width:100%; height:130px; border-radius:14px; overflow:hidden; margin-bottom:14px;
+    position:relative; border:1px solid var(--line);
+  }
+  .tab-photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .tab-photo .cap{
+    position:absolute; left:0; right:0; bottom:0;
+    background:linear-gradient(transparent, rgba(20,25,38,.9));
+    color:var(--cream); font-size:10.5px; padding:20px 12px 9px; line-height:1.5;
+  }
+  .tab-photo .cap b{ font-family:'Noto Serif TC',serif; font-size:12.5px; display:block; margin-bottom:2px; color:var(--gold-light); }
+
+  .view{ display:none; padding:0 18px 10px; animation:fadeUp .32s ease both; }
+  .view.active{ display:block; }
+  @keyframes fadeUp{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .section-title{ display:flex; align-items:baseline; gap:10px; margin:6px 2px 14px; }
+  .section-title .zh{ font-size:19px; font-weight:700; }
+  .section-title .en{ font-size:10.5px; letter-spacing:.16em; color:var(--muted); text-transform:uppercase; }
+
+  .stamp-strip{ display:flex; gap:14px; overflow-x:auto; padding:6px 18px 18px; margin:0 -18px; scrollbar-width:none; }
+  .stamp-strip::-webkit-scrollbar{ display:none; }
+  .stamp{ flex:0 0 auto; width:64px; text-align:center; cursor:pointer; user-select:none; display:flex; flex-direction:column; align-items:center; gap:8px; }
+  .stamp .seal{
+    width:52px; height:52px; border-radius:50%; border:2px solid var(--miso-light);
+    display:flex; align-items:center; justify-content:center; font-family:'Noto Serif TC',serif;
+    font-size:22px; font-weight:900; color:var(--miso-light); transform:rotate(-4deg); transition:all .25s ease;
+  }
+  .stamp.active .seal{ background:var(--miso); color:var(--cream); border-color:var(--miso); box-shadow:0 4px 14px rgba(156,74,60,.45); transform:rotate(-4deg) scale(1.06); }
+  .stamp .lbl{ font-size:10.5px; color:var(--muted); line-height:1.3; }
+  .stamp.active .lbl{ color:var(--gold-light); font-weight:600; }
+  .stamp .date{ font-size:9.5px; color:var(--muted); }
+
+  .day-hero{ border-radius:18px; padding:18px 18px 16px; margin-bottom:16px; background:linear-gradient(135deg, color-mix(in srgb, var(--day-accent) 22%, var(--surface)) 0%, var(--surface) 70%); border:1px solid var(--line); }
+  .day-hero .tag{ font-size:11px; letter-spacing:.12em; color:var(--day-accent); text-transform:uppercase; font-weight:700; }
+  .day-hero h2{ margin:4px 0 4px; font-size:22px; }
+  .day-hero .sub{ font-size:12.5px; color:var(--muted); }
+
+  .timeline{ position:relative; }
+  .t-item{ display:flex; align-items:flex-start; gap:10px; margin-bottom:16px; }
+  .t-time{ flex:0 0 46px; padding-top:13px; text-align:right; font-size:12px; font-weight:700; color:var(--gold-light); font-variant-numeric:tabular-nums; }
+  .t-rail{ flex:0 0 16px; position:relative; align-self:stretch; display:flex; justify-content:center; }
+  .t-rail .dot{ width:9px; height:9px; margin-top:15px; border-radius:50%; background:var(--day-accent); box-shadow:0 0 0 3px var(--bg); flex:0 0 auto; z-index:1; }
+  .t-rail .line{ position:absolute; top:24px; bottom:-16px; width:1.5px; background:var(--day-accent); opacity:.35; }
+  .t-item:last-child .t-rail .line{ display:none; }
+  .t-card{ flex:1 1 auto; min-width:0; background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:12px 14px; }
+  .spot-toggle{
+    display:inline-flex; align-items:center; gap:5px; margin-top:9px; cursor:pointer;
+    font-size:11.5px; font-weight:700; padding:5px 11px; border-radius:20px;
+    background:rgba(156,74,60,.20); color:var(--miso-light); border:1px solid rgba(192,106,91,.4);
+  }
+  .spot-toggle .arw{ transition:transform .2s; display:inline-block; }
+  .spot-toggle.open .arw{ transform:rotate(180deg); }
+  .spot-list{ display:none; margin-top:10px; padding-top:10px; border-top:1px dashed var(--line); }
+  .spot-list.open{ display:block; }
+  .spot-item{ display:flex; gap:9px; padding:8px 0; border-bottom:1px solid rgba(201,162,39,.12); }
+  .spot-item:last-child{ border-bottom:none; }
+  .spot-item .no{ flex:0 0 auto; font-size:15px; color:var(--gold-light); }
+  .spot-item .info{ flex:1 1 auto; min-width:0; }
+  .spot-item .nm{ font-size:12.5px; font-weight:600; line-height:1.4; }
+  .spot-item .meta{ font-size:10.5px; color:var(--muted); line-height:1.5; margin-top:2px; }
+  .spot-item .go{
+    flex:0 0 auto; align-self:center; font-size:10.5px; font-weight:700; text-decoration:none;
+    padding:5px 9px; border-radius:16px; background:var(--gold); color:#1C2333; white-space:nowrap;
+  }
+  .spot-note{ font-size:10.5px; color:var(--muted); line-height:1.6; margin-top:8px; }
+  .t-card .title{ font-size:14.5px; font-weight:600; line-height:1.45; }
+  .t-card .sub{ font-size:12px; color:var(--muted); margin-top:3px; line-height:1.5; }
+  .t-card .meta{ display:flex; align-items:center; gap:8px; margin-top:9px; flex-wrap:wrap; }
+  .cost-tag{ font-size:11px; padding:3px 9px; border-radius:20px; background:rgba(201,162,39,.14); color:var(--gold-light); font-weight:600; white-space:nowrap; }
+  .map-btn{ display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:700; padding:5px 11px; border-radius:20px; background:var(--gold); color:#1C2333; text-decoration:none; white-space:nowrap; }
+  .map-btn svg{ width:12px; height:12px; }
+  .note-tag{ font-size:11px; padding:5px 10px; border-radius:10px; background:rgba(156,74,60,.18); color:var(--miso-light); line-height:1.5; margin-top:8px; }
+
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:16px; margin-bottom:14px; }
+  .card h3{ font-size:15.5px; margin:0 0 8px; }
+  .card p{ font-size:12.8px; color:var(--muted); line-height:1.7; margin:0 0 6px; }
+  .pill-row{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+
+  table.mini{ width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+  table.mini th, table.mini td{ text-align:left; padding:7px 6px; border-bottom:1px solid var(--line); }
+  table.mini th{ color:var(--gold-light); font-weight:600; font-size:11px; }
+  table.mini td.num{ color:var(--muted); }
+  .total-row td{ font-weight:700; color:var(--gold-light) !important; border-top:1px solid var(--gold); }
+
+  .leg-label{ display:inline-block; font-size:10.5px; font-weight:700; letter-spacing:.06em; color:#1C2333; background:var(--gold-light); padding:2px 8px; border-radius:8px; margin-bottom:8px; }
+  .recommend{ border:1px solid var(--gold); }
+  .recommend .badge{ float:right; font-size:10px; background:var(--miso); color:var(--cream); padding:2px 8px; border-radius:10px; }
+
+  .stay-card .status{ font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; }
+  .status.confirmed{ background:rgba(120,170,110,.18); color:#9FD08E; }
+  .status.pending{ background:rgba(201,162,39,.18); color:var(--gold-light); }
+  .stay-row{ display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-bottom:10px; }
+  .addr{ font-size:12.5px; color:var(--cream); line-height:1.6; margin:8px 0; }
+
+  .check-item{ display:flex; align-items:center; gap:12px; padding:12px 4px; border-bottom:1px solid var(--line); cursor:pointer; }
+  .check-item:last-child{ border-bottom:none; }
+  .box{ width:20px; height:20px; border-radius:6px; border:1.5px solid var(--gold); flex:0 0 auto; display:flex; align-items:center; justify-content:center; transition:all .15s ease; }
+  .box svg{ width:12px; height:12px; opacity:0; transition:opacity .15s; }
+  .check-item.done .box{ background:var(--gold); }
+  .check-item.done .box svg{ opacity:1; }
+  .check-item .txt{ font-size:13.5px; transition:color .15s, opacity .15s; }
+  .check-item.done .txt{ color:var(--muted); text-decoration:line-through; opacity:.7; }
+  .t-item.visited .t-card .title{ text-decoration:line-through; opacity:.55; }
+  .t-item.visited .t-card .sub{ opacity:.45; }
+  .t-item.visited .t-time{ opacity:.5; }
+  .t-visit-box{ width:19px; height:19px; border-radius:6px; border:1.5px solid var(--gold); flex:0 0 auto;
+    display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s ease;
+    margin-top:2px; margin-right:8px; background:var(--surface); }
+  .t-item.visited .t-visit-box{ background:var(--gold); }
+  .t-visit-box svg{ opacity:0; width:13px; height:13px; }
+  .t-item.visited .t-visit-box svg{ opacity:1; }
+  .info-note{ font-size:12.3px; color:var(--muted); line-height:1.75; margin-bottom:8px; }
+  .info-note b{ color:var(--gold-light); }
+
+  .shop-grid{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .shop-card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; position:relative; cursor:pointer; transition:opacity .2s, border-color .2s; }
+  .shop-card .tick{
+    position:absolute; top:7px; right:7px; z-index:2;
+    width:24px; height:24px; border-radius:50%; border:2px solid var(--gold);
+    background:rgba(28,35,51,.82); display:flex; align-items:center; justify-content:center;
+    transition:background .18s, border-color .18s;
+  }
+  .shop-card .tick svg{ width:13px; height:13px; opacity:0; transition:opacity .18s; }
+  .shop-card.bought{ opacity:.5; border-color:#6E8F63; }
+  .shop-card.bought .tick{ background:#6E8F63; border-color:#6E8F63; }
+  .shop-card.bought .tick svg{ opacity:1; }
+  .shop-card.bought .nm{ text-decoration:line-through; }
+  .shop-progress{ font-size:11px; color:var(--gold-light); margin:0 2px 8px; font-weight:600; }
+  .shop-card .img{ width:100%; height:96px; background:#151a29 center/cover no-repeat; }
+  .shop-card .img.noimg{ display:flex; align-items:center; justify-content:center; font-size:26px; }
+  .shop-card .body{ padding:10px 11px 12px; }
+  .shop-card .nm{ font-size:12.5px; font-weight:600; line-height:1.4; margin-bottom:4px; }
+  .shop-card .loc{ font-size:10.8px; color:var(--gold-light); line-height:1.5; margin-bottom:3px; }
+  .shop-card .memo{ font-size:10.3px; color:var(--muted); line-height:1.5; }
+  .shop-sub{ font-size:11px; letter-spacing:.08em; color:var(--muted); text-transform:uppercase; margin:18px 2px 10px; }
+
+  .budget-total{ display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, rgba(201,162,39,.16), rgba(156,74,60,.10)); border:1px solid var(--gold); border-radius:16px; padding:16px 18px; margin-bottom:16px; }
+  .budget-total .lbl{ font-size:12px; color:var(--muted); }
+  .budget-total .val{ font-size:26px; font-weight:900; font-family:'Noto Serif TC',serif; color:var(--gold-light); }
+  .budget-total .cap{ font-size:11px; color:var(--muted); }
+
+  /* ---------- Map mode ---------- */
+  .mode-toggle{ display:flex; gap:8px; margin:0 2px 16px; }
+  .mode-toggle button{
+    flex:1; padding:9px 0; border-radius:12px; border:1px solid var(--line); background:var(--surface);
+    color:var(--muted); font-family:'Noto Sans TC',sans-serif; font-size:12.5px; font-weight:600; cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:6px; transition:all .18s ease;
+  }
+  .mode-toggle button svg{ width:14px; height:14px; }
+  .mode-toggle button.active{ background:var(--gold); color:#1C2333; border-color:var(--gold); }
+  #mapWrap{ display:none; }
+  #mapWrap.active{ display:block; }
+  #tripMap{
+    width:100%; height:58vh; min-height:360px; border-radius:16px; overflow:hidden;
+    border:1px solid var(--line); background:var(--surface);
+  }
+  #tripMap .leaflet-tile-pane{
+    filter: invert(93%) hue-rotate(180deg) brightness(0.95) contrast(0.85) saturate(0.5);
+  }
+  #tripMap .leaflet-marker-icon, #tripMap .leaflet-overlay-pane{ filter:none; }
+  .map-legend{ display:flex; align-items:center; gap:8px; margin-top:10px; font-size:11.5px; color:var(--muted); }
+  .map-legend .sw{ width:10px; height:10px; border-radius:50%; background:var(--day-accent); flex:0 0 auto; }
+  .leaflet-popup-content-wrapper{ background:var(--surface2); color:var(--cream); border-radius:12px; }
+  .leaflet-popup-tip{ background:var(--surface2); }
+  .leaflet-popup-content{ font-family:'Noto Sans TC',sans-serif; font-size:12.5px; margin:10px 12px; }
+  .leaflet-popup-content b{ display:block; margin-bottom:5px; font-size:13px; color:var(--gold-light); }
+  .leaflet-popup-content a{ color:var(--gold-light); font-weight:700; text-decoration:none; font-size:11.5px; }
+  .leaflet-container a.leaflet-popup-close-button{ color:var(--muted); }
+  .trip-pin{ display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#1C2333; }
+
+  .guide-box{
+    margin-top:18px; padding:14px 16px; border-radius:14px;
+    background:linear-gradient(135deg, rgba(201,162,39,.10), rgba(156,74,60,.08));
+    border:1px dashed var(--line);
+  }
+  .guide-box .gt{ font-size:11px; letter-spacing:.1em; color:var(--gold-light); text-transform:uppercase; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
+  .guide-box p{ font-size:12.3px; color:var(--cream); line-height:1.85; margin:0 0 10px; opacity:.92; }
+  .guide-box p:last-child{ margin-bottom:0; }
+  .guide-box p b{ color:var(--gold-light); font-weight:700; }
+
+  .ticket-box{
+    margin:14px 0; padding:14px 16px; border-radius:14px; text-align:center;
+    background:linear-gradient(135deg, rgba(201,162,39,.22), rgba(156,74,60,.14));
+    border:1.5px solid var(--gold);
+  }
+  .ticket-box .tb-label{ font-size:10.5px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; }
+  .ticket-box .tb-name{ font-size:15px; font-weight:700; color:var(--gold-light); margin:4px 0; font-family:'Noto Serif TC',serif; }
+  .ticket-box .tb-price{ font-size:12px; color:var(--cream); }
+
+  .route-table-wrap{ overflow-x:auto; margin-top:10px; -webkit-overflow-scrolling:touch; }
+  table.route{ width:100%; min-width:560px; border-collapse:collapse; font-size:11.5px; }
+  table.route th{ text-align:left; padding:8px 10px; background:var(--surface2); color:var(--gold-light); font-weight:700; font-size:10.5px; white-space:nowrap; position:sticky; top:0; }
+  table.route td{ padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
+  table.route tr:last-child td{ border-bottom:none; }
+  table.route td.route-type{ font-weight:700; color:var(--cream); white-space:nowrap; }
+  table.route td.route-tool{ color:var(--gold-light); font-weight:600; white-space:nowrap; }
+  table.route td.route-note{ color:var(--muted); line-height:1.6; min-width:160px; }
+  table.route td.route-note b.good{ color:#9FD08E; }
+  table.route td.route-note b.warn{ color:var(--miso-light); }
+  table.route tr.best td{ background:rgba(201,162,39,.08); }
+
+  .weather-box{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    background:var(--surface); border:1px solid var(--line); border-radius:16px;
+    padding:12px 16px; margin-bottom:16px;
+  }
+  .weather-box .wnow{ display:flex; align-items:center; gap:10px; }
+  .weather-box .wicon{ font-size:26px; }
+  .weather-box .wtemp{ font-size:20px; font-weight:800; font-family:'Noto Serif TC',serif; color:var(--gold-light); }
+  .weather-box .wloc{ font-size:10.5px; color:var(--muted); }
+  .weather-strip{ display:flex; gap:6px; overflow-x:auto; }
+  .weather-strip::-webkit-scrollbar{ display:none; }
+  .wday{ flex:0 0 auto; text-align:center; font-size:10px; color:var(--muted); min-width:38px; }
+  .wday .wd-icon{ font-size:16px; margin:2px 0; }
+  .wday .wd-temp{ font-size:10px; color:var(--cream); }
+  .weather-fallback{ font-size:11.5px; color:var(--muted); line-height:1.6; }
+
+  .expense-card{ margin-top:16px; }
+  .exp-form{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+  .exp-form input, .exp-form select{
+    background:var(--surface2); border:1px solid var(--line); border-radius:10px;
+    padding:9px 10px; color:var(--cream); font-family:'Noto Sans TC',sans-serif; font-size:12.5px;
+  }
+  .exp-form input::placeholder{ color:var(--muted); }
+  .exp-form .full{ grid-column:1 / -1; }
+  .exp-add-btn{
+    width:100%; padding:10px; border-radius:10px; border:none; background:var(--gold); color:#1C2333;
+    font-weight:700; font-size:13px; cursor:pointer; font-family:inherit;
+  }
+  .exp-total{
+    display:flex; justify-content:space-between; align-items:baseline; margin:14px 0 10px;
+    padding-top:12px; border-top:1px dashed var(--line);
+  }
+  .exp-total .lbl{ font-size:12px; color:var(--muted); }
+  .exp-total .val{ font-size:22px; font-weight:900; color:var(--gold-light); font-family:'Noto Serif TC',serif; }
+  .exp-list{ max-height:280px; overflow-y:auto; }
+  .exp-item{ display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--line); }
+  .exp-item:last-child{ border-bottom:none; }
+  .exp-item .ei-l{ display:flex; flex-direction:column; }
+  .exp-item .ei-name{ font-size:12.5px; color:var(--cream); }
+  .exp-item .ei-cat{ font-size:10px; color:var(--gold-light); }
+  .exp-item .ei-r{ display:flex; align-items:center; gap:8px; }
+  .exp-item .ei-amt{ font-size:13px; font-weight:700; color:var(--cream); }
+  .exp-del{ width:22px; height:22px; border-radius:50%; border:none; background:rgba(156,74,60,.25); color:var(--miso-light); font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .exp-empty{ text-align:center; font-size:12px; color:var(--muted); padding:16px 0; }
+  .exp-sync-note{ font-size:10.5px; color:var(--muted); text-align:center; margin-top:8px; }
+
+  .map-mode-toggle{ display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+  .map-mode-toggle button{
+    flex:1 1 auto; min-width:75px; padding:7px 3px; border-radius:10px; border:1px solid var(--line); background:var(--surface);
+    color:var(--muted); font-family:inherit; font-size:10px; font-weight:600; cursor:pointer;
+  }
+  .map-mode-toggle button.active{ background:var(--gold); color:#1C2333; border-color:var(--gold); }
+  .day-chip-row{ display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap; }
+  .day-chip{ flex:1 1 auto; display:flex; align-items:center; justify-content:center; gap:5px;
+    padding:7px 8px; border-radius:20px; border:1px solid var(--line); background:var(--surface);
+    color:var(--muted); font-family:inherit; font-size:10.5px; font-weight:700; cursor:pointer; }
+  .day-chip .dc-dot{ width:8px; height:8px; border-radius:50%; flex:0 0 auto; }
+  .day-chip.active{ color:#fff; border-color:transparent; }
+  .map-detail{
+    display:none; margin-top:12px; padding:14px 16px; border-radius:14px;
+    background:var(--surface); border:1px solid var(--gold);
+  }
+  .map-detail.show{ display:block; }
+  .map-detail .md-title{ font-size:15px; font-weight:700; color:var(--gold-light); margin-bottom:8px; display:flex; align-items:center; gap:8px; }
+  .map-detail .md-guide{ font-size:12.3px; color:var(--cream); line-height:1.8; margin-bottom:10px; opacity:.92; }
+  .map-detail .md-shop{ display:flex; gap:8px; overflow-x:auto; }
+  .map-detail .md-shop img{ width:52px; height:52px; object-fit:cover; border-radius:10px; flex:0 0 auto; }
+  .map-detail .md-shop-item{ flex:0 0 auto; text-align:center; width:56px; }
+  .map-detail .md-shop-name{ font-size:9px; color:var(--muted); margin-top:3px; line-height:1.3; }
+  .map-detail .md-empty{ font-size:12px; color:var(--muted); }
+
+  .illus-map{
+    display:none; position:relative; width:100%; min-height:520px;
+    border-radius:10px; overflow:hidden; border:1px solid #B8A876;
+    background:
+      radial-gradient(ellipse at 25% 20%, rgba(180,160,110,.10) 0%, transparent 50%),
+      radial-gradient(ellipse at 75% 80%, rgba(150,130,90,.10) 0%, transparent 55%),
+      linear-gradient(160deg, #F2E9D5 0%, #EDE2C8 55%, #E6D9B8 100%);
+  }
+  .illus-map.show{ display:block; }
+  .illus-map svg.illus-bg{ position:absolute; inset:0; width:100%; height:100%; z-index:0; opacity:.9; }
+  .illus-map svg.illus-paths{ position:absolute; inset:0; width:100%; height:100%; z-index:1; }
+  .illus-day-header{
+    display:none; align-items:center; margin-bottom:10px;
+  }
+  .illus-day-header.show{ display:flex; }
+  .illus-day-header .idh-badge{
+    color:#3A2E1E; background:#F2E9D5 !important; font-family:'Noto Serif TC',serif; font-weight:700;
+    font-size:14px; padding:7px 16px; border:1.5px solid #3A2E1E; border-radius:2px; letter-spacing:.04em;
+  }
+  .illus-node{
+    position:absolute; transform:translate(-50%,-50%); z-index:2;
+    display:flex; flex-direction:column; align-items:center; gap:4px; width:96px; cursor:pointer;
+  }
+  .illus-node .trip-day-tag{
+    font-size:9px; font-weight:700; color:#fff; padding:2px 7px; border-radius:8px; margin-bottom:2px;
+  }
+  .illus-node .in-icon{
+    width:46px; height:46px; border-radius:6px; background:#FAF4E6; display:flex; align-items:center; justify-content:center;
+    font-size:24px; box-shadow:0 2px 4px rgba(58,46,30,.25); border:1.5px solid #3A2E1E;
+  }
+  .illus-node .in-card{
+    background:#FAF4E6; border:1.5px solid #3A2E1E; border-radius:2px; padding:4px 7px; text-align:center;
+    box-shadow:0 2px 4px rgba(58,46,30,.18); max-width:98px;
+  }
+  .illus-node .in-name{ font-size:10px; font-weight:700; color:#3A2E1E; line-height:1.28; }
+  .illus-node .in-note{ font-size:9px; color:#8A7B5C; margin-top:2px; line-height:1.3; }
+  .illus-empty{ padding:60px 20px; text-align:center; color:#8A7B5C; font-size:13px; }
+
+  nav.bottomnav{ position:fixed; left:0; right:0; bottom:0; z-index:50; max-width:520px; margin:0 auto; background:rgba(28,35,51,.92); backdrop-filter:blur(14px); border-top:1px solid var(--line); display:flex; padding:9px 6px calc(9px + var(--safe-bottom)); }
+  nav.bottomnav button{ flex:1; background:none; border:none; color:var(--muted); font-family:inherit; display:flex; flex-direction:column; align-items:center; gap:4px; padding:4px 2px; cursor:pointer; }
+  nav.bottomnav button svg{ width:21px; height:21px; }
+  nav.bottomnav button span{ font-size:10px; font-weight:600; }
+  nav.bottomnav button.active{ color:var(--gold-light); }
+  nav.bottomnav button.active svg{ filter:drop-shadow(0 0 5px rgba(201,162,39,.5)); }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+</head>
+<body>
+<div id="app">
+
+  <div class="hero">
+    <div class="hero-photo"></div>
+    <div class="topbar">
+      <div>
+        <div class="eyebrow">Nagoya Solo Trip</div>
+        <div class="name serif">名古屋・御朱印帖</div>
+        <div class="hero-sub">40歲生日紀念 · 2026.8.26—8.31</div>
+      </div>
+      <div class="kinshachi">🐟</div>
+    </div>
+  </div>
+
+  <section class="view active" id="view-itinerary">
+    <div class="section-title"><div class="zh serif">六日行程</div><div class="en">Aug 26 – 31, 2026</div></div>
+    <div class="weather-box" id="weatherBox">
+      <div class="wnow"><div class="wicon">⛅</div><div><div class="wtemp">載入中...</div><div class="wloc">名古屋即時天氣</div></div></div>
+      <div class="weather-strip" id="weatherStrip"></div>
+    </div>
+    <div class="stamp-strip" id="stampStrip"></div>
+    <div class="mode-toggle">
+      <button id="btnTimeline" class="active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg> 時間軸
+      </button>
+      <button id="btnMap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 20l-6-3V4l6 3 6-3 6 3v13l-6-3-6 3zM9 4v13M15 7v13"/></svg> 地圖
+      </button>
+    </div>
+    <div id="dayContent"></div>
+    <div id="mapWrap">
+      <div class="map-mode-toggle">
+        <button id="mapModeDay" class="active">📍 本日路線</button>
+        <button id="mapModeAll">🗺️ 全部景點</button>
+        <button id="mapModeFood">🥖 美食地圖</button>
+      </div>
+      <div class="day-chip-row" id="mapDayChips"></div>
+      <div id="tripMap"></div>
+      <div class="map-legend"><span class="sw"></span><span id="mapLegendText">當天路線點位，點選圖釘查看導航</span></div>
+      <div class="map-detail" id="mapDetail">
+        <div class="md-title" id="mdTitle"></div>
+        <div class="md-guide" id="mdGuide"></div>
+        <div class="md-shop" id="mdShop"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-transport">
+    <div class="section-title"><div class="zh serif">交通策略</div><div class="en">Getting Around</div></div>
+
+    <div class="tab-photo">
+      <img src="images/street_science.jpeg" alt="名古屋街景">
+      <div class="cap"><b>廣小路長島町</b>名古屋市科學館的巨大銀球，轉個彎就會遇見的城市風景</div>
+    </div>
+
+    <div class="ticket-box">
+      <div class="tb-label">必備交通卡</div>
+      <div class="tb-name">Suica（已儲值 ¥20,000）</div>
+      <div class="tb-price">全國相通，地下鐵／市巴士／名鐵電車／名鐵巴士皆可用，唯佐久島渡輪需現金</div>
+    </div>
+
+    <div class="card recommend">
+      <span class="leg-label">LEG 1 · 8/27 難波→名古屋</span><span class="badge">已選定</span>
+      <h3>🚄 早餐後搭新幹線出發</h3>
+      <div class="route-table-wrap">
+        <table class="route">
+          <tr><th>方案</th><th>推薦工具</th><th>出發地</th><th>總車程</th><th>票價</th><th>總評價與建議</th></tr>
+          <tr class="best">
+            <td class="route-type">新幹線</td>
+            <td class="route-tool">地鐵+新幹線自由席</td>
+            <td>難波→新大阪</td>
+            <td>約50分（+地鐵20-25分）</td>
+            <td>約¥6,090</td>
+            <td class="route-note"><b class="good">已選定！</b>08:30新大阪發車，09:20抵達名古屋。比近鐵快近2小時，大幅增加名古屋活動時間。⚠️ 從新大阪發車（非難波）</td>
+          </tr>
+          <tr>
+            <td class="route-type">備選：近鐵特急</td>
+            <td class="route-tool">アーバンライナー</td>
+            <td>難波</td>
+            <td>約2小時44分</td>
+            <td>約¥5,690</td>
+            <td class="route-note">難波直達不用轉車，較省錢但慢近2小時</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <span class="leg-label">LEG 2 · 名古屋市區移動</span>
+      <h3>🎫 一日券試算</h3>
+      <div class="note-tag" style="background:rgba(120,170,110,.14);color:#9FD08E;margin-bottom:10px;">✅ 結論：六天都不建議買一日券，全程用 Suica 逐次扣款即可</div>
+      <table class="mini"><tr><th>日期</th><th>逐次扣款</th><th>一日券</th><th>結論</th></tr>
+        <tr><td>Day2 8/27</td><td>約¥840</td><td>¥760</td><td>幾乎打平</td></tr>
+        <tr><td>Day3 8/28</td><td>約¥900</td><td>¥760</td><td>省¥140</td></tr>
+        <tr><td>Day4 8/29</td><td>全程名鐵</td><td>不適用</td><td>❌</td></tr>
+        <tr><td>Day5 8/30</td><td>全程名鐵</td><td>不適用</td><td>❌</td></tr>
+        <tr><td>Day6 8/31</td><td>約¥260</td><td>¥760</td><td>❌</td></tr>
+      </table>
+      <p style="margin-top:10px;"><b>為什麼不划算？</b></p>
+      <p>1. Day4、Day5 主力是<b>名鐵</b>（河和線、常滑線、犬山線、西尾線），不在地下鐵一日券範圍內</p>
+      <p>2. Day6 的 <b>リニモ</b>（磁浮列車）也是獨立系統，一日券不適用</p>
+      <p>3. 唯一可能划算的 Day3 只省約¥140（台幣30元），還要承擔行程有變、搭不到4趟就虧本的風險</p>
+      <table class="mini" style="margin-top:12px;"><tr><th>票種參考</th><th>費用</th><th>適用範圍</th></tr>
+        <tr><td>單程票（IC卡）</td><td>¥210-260/趟</td><td>每天</td></tr>
+        <tr><td>地下鐵24小時券</td><td>¥760</td><td>僅市營地下鐵</td></tr>
+        <tr><td>ドニチエコきっぷ</td><td>¥620</td><td>僅六日/8日</td></tr>
+      </table>
+    </div>
+
+    <div class="card"><span class="leg-label">LEG 3 · Day4 名古屋⇄日間賀島＋常滑</span>
+      <table class="mini"><tr><th>路段</th><th>交通</th><th>費用</th></tr>
+        <tr><td>名古屋→河和</td><td>名鉄特急</td><td>約45分</td></tr>
+        <tr><td>河和港⇄日間賀島</td><td>高速船</td><td>單程¥1,600</td></tr>
+        <tr><td>河和→常滑</td><td>名鉄常滑線</td><td>約30-40分</td></tr>
+        <tr><td>常滑→名古屋</td><td>名鉄特急</td><td>約35分・¥750</td></tr>
+      </table>
+      <p style="margin-top:10px;">單日交通合計約¥4,000-4,500，manaca可用電車段，船票需現場購買。</p>
+    </div>
+
+    <div class="card"><span class="leg-label">LEG 4 · Day5 名古屋⇄犬山城＋西尾抹茶</span>
+      <table class="mini"><tr><th>路段</th><th>交通</th><th>費用</th></tr>
+        <tr><td>名古屋→犬山駅</td><td>名鉄特急/ミュースカイ</td><td>約25-29分・約¥690</td></tr>
+        <tr><td>犬山駅→名古屋</td><td>名鉄特急</td><td>約25-29分・約¥690</td></tr>
+        <tr><td>名古屋⇄西尾駅</td><td>名鉄西尾線特急</td><td>約50分・來回約¥1,140</td></tr>
+        <tr><td>西尾駅⇄抹茶ミュージアム</td><td>計程車</td><td>約10分・來回約¥2,000</td></tr>
+      </table>
+      <p style="margin-top:10px;">單日交通合計約¥4,520，manaca可用電車段，計程車需現場付費。犬山城入場料約¥550，抹茶體驗費約¥1,500-3,000（需先預約）。</p>
+    </div>
+
+    <div class="card"><span class="leg-label">LEG 5 · Day6 吉卜力公園→中部機場</span>
+      <p>地下鐵+リニモ（名古屋→愛・地球博記念公園）約¥680 → 名鐵巴士直達中部機場約¥1,800。</p>
+      <p>單程總計約¥2,480，已是最優化路線（省去回名古屋轉車）。</p>
+    </div>
+
+    <div class="card">
+      <h3>📋 全程交通總表</h3>
+      <p style="margin-bottom:12px;">每段路線的交通方式與官方查詢連結，出發前可先確認時刻表。</p>
+
+      <div style="font-size:11.5px;font-weight:700;color:var(--gold-light);margin:14px 0 6px;">DAY 1 ・ 8/26 抵達</div>
+      <table class="mini">
+        <tr><td>桃園T1→關西T2</td><td class="num">樂桃 MM028</td></tr>
+        <tr><td>關西機場→西成區飯店</td><td class="num">南海電鐵・約¥1,200</td></tr>
+      </table>
+      <div class="pill-row">
+        <a class="map-btn" href="https://www.flypeach.com/tw" target="_blank">✈️ Peach</a>
+        <a class="map-btn" href="https://www.nankai.co.jp/traffic/" target="_blank">🚃 南海電鐵</a>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:700;color:var(--gold-light);margin:16px 0 6px;">DAY 2 ・ 8/27 移動名古屋</div>
+      <table class="mini">
+        <tr><td>難波→新大阪</td><td class="num">地鐵御堂筋線・¥290</td></tr>
+        <tr><td>新大阪→名古屋</td><td class="num">新幹線自由席・約¥5,800</td></tr>
+        <tr><td>名古屋→神宮前</td><td class="num">名鐵本線・IC卡</td></tr>
+        <tr><td>榮商圈移動</td><td class="num">地下鐵・IC卡</td></tr>
+      </table>
+      <div class="pill-row">
+        <a class="map-btn" href="https://subway.osakametro.co.jp/" target="_blank">🚇 大阪Metro</a>
+        <a class="map-btn" href="https://railway.jr-central.co.jp/" target="_blank">🚄 JR東海</a>
+        <a class="map-btn" href="https://top.meitetsu.co.jp/" target="_blank">🚃 名鐵</a>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:700;color:var(--gold-light);margin:16px 0 6px;">DAY 3 ・ 8/28 清洲城・POPEYE・骨董市・東別院・RPM・EGORAPIN'・大須</div>
+      <table class="mini">
+        <tr><td>名古屋→清洲</td><td class="num">JR東海道本線・約¥200</td></tr>
+        <tr><td>名古屋→伏見</td><td class="num">地下鐵東山線・約10分</td></tr>
+        <tr><td>伏見→大須觀音</td><td class="num">地下鐵鶴舞線・約5分</td></tr>
+        <tr><td>大須觀音→東別院</td><td class="num">上前津轉名城線・約10-15分</td></tr>
+        <tr><td>東別院→庄内通（伊奴神社）</td><td class="num">上前津轉鶴舞線・約30分</td></tr>
+        <tr><td>庄内通→荒畑（RPM）</td><td class="num">鶴舞線直達・約25分</td></tr>
+        <tr><td>荒畑→上前津（EGORAPIN'）</td><td class="num">鶴舞線・約5分</td></tr>
+      </table>
+      <div class="pill-row">
+        <a class="map-btn" href="https://www.kotsu.city.nagoya.jp/" target="_blank">🚇 名古屋市交通局</a>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:700;color:var(--gold-light);margin:16px 0 6px;">DAY 4 ・ 8/29 日間賀島＋常滑</div>
+      <table class="mini">
+        <tr><td>名古屋→河和</td><td class="num">名鐵河和線特急・約¥1,150</td></tr>
+        <tr><td>河和港⇄日間賀島</td><td class="num">高速船・單程¥1,600</td></tr>
+        <tr><td>河和→常滑</td><td class="num">名鐵常滑線・約¥800</td></tr>
+        <tr><td>常滑→名古屋</td><td class="num">名鐵特急・¥750</td></tr>
+      </table>
+      <div class="pill-row">
+        <a class="map-btn" href="https://www.meikaijo.co.jp/timetable" target="_blank">⛴️ 名鉄海上観光船</a>
+        <a class="map-btn" href="https://top.meitetsu.co.jp/" target="_blank">🚃 名鐵時刻表</a>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:700;color:var(--gold-light);margin:16px 0 6px;">DAY 5 ・ 8/30 犬山城＋西尾</div>
+      <table class="mini">
+        <tr><td>名古屋⇄犬山</td><td class="num">名鐵特急・¥690單程</td></tr>
+        <tr><td>名古屋⇄西尾</td><td class="num">名鐵西尾線特急・¥570單程</td></tr>
+        <tr><td>西尾駅⇄抹茶博物館</td><td class="num">計程車・來回約¥2,000</td></tr>
+      </table>
+      <div class="pill-row">
+        <a class="map-btn" href="https://top.meitetsu.co.jp/" target="_blank">🚃 名鐵官網</a>
+      </div>
+
+      <div style="font-size:11.5px;font-weight:700;color:var(--gold-light);margin:16px 0 6px;">DAY 6 ・ 8/31 吉卜力・賦歸</div>
+      <table class="mini">
+        <tr><td>名古屋→藤が丘</td><td class="num">地下鐵東山線・IC卡</td></tr>
+        <tr><td>藤が丘→愛・地球博記念公園</td><td class="num">リニモ磁浮・約¥360</td></tr>
+        <tr><td>吉卜力→中部機場</td><td class="num">名鐵巴士直達・約¥1,800</td></tr>
+        <tr><td>中部機場T2→桃園T1</td><td class="num">虎航 IT209</td></tr>
+      </table>
+      <div class="pill-row">
+        <a class="map-btn" href="https://www.linimo.jp/" target="_blank">🚝 Linimo</a>
+        <a class="map-btn" href="https://www.meitetsu-bus.co.jp/airport/fujigaoka" target="_blank">🚌 名鐵巴士</a>
+        <a class="map-btn" href="https://www.tigerairtw.com/" target="_blank">✈️ 虎航</a>
+      </div>
+
+      <div class="note-tag" style="margin-top:14px;">💳 <b>Suica可用</b>：所有電車、地下鐵、市巴士、名鐵巴士　｜　<b>需現金/另購</b>：日間賀島渡輪、西尾計程車、新幹線車票</div>
+
+      <div style="font-size:11.5px;font-weight:700;color:var(--gold-light);margin:16px 0 6px;">🔍 通用查詢工具</div>
+      <div class="pill-row">
+        <a class="map-btn" href="https://maps.google.com" target="_blank">Google Maps</a>
+        <a class="map-btn" href="https://www.navitime.co.jp/" target="_blank">NAVITIME</a>
+        <a class="map-btn" href="https://www.jorudan.co.jp/" target="_blank">Jorudan</a>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>💰 六天交通費總結（每人）</h3>
+      <table class="mini">
+        <tr><th>項目</th><th>金額</th><th>約合台幣</th></tr>
+        <tr><td>關西機場→飯店（西成區）</td><td class="num">約¥1,200</td><td class="num">250</td></tr>
+        <tr><td>新幹線 新大阪→名古屋（含地鐵）</td><td class="num">¥6,090</td><td class="num">1,266</td></tr>
+        <tr><td>名古屋市區(4天)</td><td class="num">約¥2,000</td><td class="num">415</td></tr>
+        <tr><td>日間賀島＋常滑</td><td class="num">約¥4,250</td><td class="num">885</td></tr>
+        <tr><td>犬山城＋西尾抹茶</td><td class="num">約¥4,520</td><td class="num">940</td></tr>
+        <tr><td>吉卜力→機場</td><td class="num">¥2,480</td><td class="num">515</td></tr>
+        <tr class="total-row"><td>合計</td><td>約¥20,540</td><td>約4,271</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="view" id="view-stay">
+    <div class="section-title"><div class="zh serif">住宿資訊</div><div class="en">Where You Sleep</div></div>
+
+    <div class="card stay-card">
+      <div class="stay-row"><h3 style="margin:0;">BESTIE - DOYANEN HOTELS</h3><span class="status confirmed">已確認</span></div>
+      <p class="addr">📍 1 Chome-14-17 Haginochaya, 西成區, 557-0004 大阪市, 大阪府</p>
+      <table class="mini">
+        <tr><td>入住</td><td>8/26（三）15:00-22:00</td></tr>
+        <tr><td>退房</td><td>8/27（四）10:00前</td></tr>
+        <tr><td>天數</td><td>1晚</td></tr>
+        <tr><td>房費</td><td>TWD 478（已付款）</td></tr>
+        <tr><td>免費取消期限</td><td>2026/8/20 23:59前</td></tr>
+      </table>
+      <div class="pill-row">
+        <a class="map-btn" href="https://www.google.com/maps/search/?api=1&query=BESTIE+DOYANEN+HOTELS+Osaka" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg> 導航
+        </a>
+      </div>
+    </div>
+
+    <div class="card stay-card">
+      <div class="stay-row"><h3 style="margin:0;">BASE LAYER HOTEL<br>NAGOYA NISHIKI</h3><span class="status confirmed">已確認</span></div>
+      <p class="addr">📍 2-6-30, Nishiki, 中區, 460-0003 名古屋市, 愛知縣</p>
+      <table class="mini">
+        <tr><td>入住</td><td>8/27（四）15:00-22:00</td></tr>
+        <tr><td>退房</td><td>8/31（一）10:00前</td></tr>
+        <tr><td>天數</td><td>4晚</td></tr>
+        <tr><td>房費</td><td>TWD 4,264（已付款）</td></tr>
+        <tr><td>免費取消期限</td><td>8/26 18:00前</td></tr>
+      </table>
+      <div class="pill-row">
+        <a class="map-btn" href="https://www.google.com/maps/search/?api=1&query=BASE+LAYER+HOTEL+NAGOYA+NISHIKI" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg> 導航
+        </a>
+      </div>
+    </div>
+
+    <div class="card"><h3>✅ 已確認事項</h3><p>MONDAY VIBES COFFEE 已確認恢復營業，可以放心安排。</p></div>
+    <div class="card" style="border-color:var(--gold);"><h3>📞 待辦提醒</h3><p><b>8/30 犬山返程後</b>，晚餐「完全個室焼肉 牛炙 名駅別邸」建議先電話確認1人可訂完全個室座位。</p><p>☎ 050-5486-3252</p></div>
+  </section>
+
+  <section class="view" id="view-packing">
+    <div class="section-title"><div class="zh serif">行前準備</div><div class="en">Packing & Notes</div></div>
+
+    <div class="card" style="border-color:var(--miso);">
+      <h3>🆘 緊急聯絡與求助資訊</h3>
+      <table class="mini">
+        <tr><td>警察</td><td class="num"><b>110</b></td></tr>
+        <tr><td>救護車／消防</td><td class="num"><b>119</b></td></tr>
+        <tr><td>護照遺失／重大人身安全</td><td class="num">駐大阪辦事處緊急電話<br>080-1460-2568<br>（海外漫遊 +81-80-1460-2568）</td></tr>
+        <tr><td>一般護照/簽證（上班時間）</td><td class="num">06-6227-8623</td></tr>
+        <tr><td>信用卡遺失／盜刷</td><td class="num">卡片背面掛失電話</td></tr>
+        <tr><td>旅平險緊急協助</td><td class="num">保單24小時專線</td></tr>
+      </table>
+      <div class="note-tag" style="margin-top:10px;">⚠️ 駐大阪辦事處緊急電話僅供車禍、搶劫、生命安危等急難事件使用，非急難請勿撥打。轄區涵蓋愛知縣。</div>
+      <p style="margin-top:10px;">💡 建議把以上號碼截圖存進手機備忘錄；護照也拍照存雲端備份，萬一遺失能加速補辦。信用卡與保單的緊急電話請出發前自行確認並存好。</p>
+    </div>
+
+    <div class="card"><h3>🎒 行李清單</h3><div id="checklist"></div></div>
+    <div class="card">
+      <h3>ℹ️ 實用資訊</h3>
+      <div class="info-note"><b>匯率參考</b>：1 TWD ≈ 4.7-4.9 JPY（出發前請再次確認）</div>
+      <div class="info-note"><b>交通票券</b>：名古屋市區可考慮「地下鐵一日券」（若當天多次搭乘較划算）</div>
+      <div class="info-note"><b>佐久島注意</b>：船班、巴士班次少，務必出發前再次核對當日時刻表</div>
+      <div class="info-note"><b>MONDAY VIBES COFFEE</b>：已確認恢復營業 ✅</div>
+      <div class="info-note"><b>備用景點</b>：佐久島已移出六天行程（船班/巴士班次少，風險最高），未來可專程安排一整天</div>
+    </div>
+  </section>
+
+  <section class="view" id="view-budget">
+    <div class="section-title"><div class="zh serif">預算總覽</div><div class="en">Budget Breakdown</div></div>
+
+    <div class="tab-photo" style="height:150px;">
+      <img src="images/bookstore.jpeg" alt="書店">
+      <div class="cap"><b>書之殿堂</b>整面挑高書牆與交錯階梯，Day2 傍晚的丸善之旅</div>
+    </div>
+
+    <div class="budget-total">
+      <div><div class="lbl">不含購物 小計</div><div class="val">27,663</div><div class="cap">TWD／目標預算 40,000</div></div>
+      <div style="text-align:right;"><div class="lbl">購物空間</div><div class="val" style="font-size:20px;">12,337</div></div>
+    </div>
+
+    <div class="card">
+      <table class="mini">
+        <tr><th>類別</th><th>金額 TWD</th></tr>
+        <tr><td>交通（含機票估）</td><td class="num">12,271</td></tr>
+        <tr><td>住宿（大阪1晚＋名古屋4晚）</td><td class="num">4,742</td></tr>
+        <tr><td>餐飲（6天）</td><td class="num">5,500</td></tr>
+        <tr><td>活動／門票（含吉卜力、犬山城、西尾抹茶體驗、錢湯、機場溫泉）</td><td class="num">2,650</td></tr>
+        <tr><td>緊急預備金</td><td class="num">2,500</td></tr>
+        <tr class="total-row"><td>小計</td><td>27,663</td></tr>
+      </table>
+      <p style="margin-top:10px;">機票金額為估算，建議確認實際票價後回來更新。吉卜力門票、兩晚住宿皆已付款。四個遠程景點全部塞進去，預算依然在4萬內 🎉</p>
+    </div>
+
+    <div class="card expense-card">
+      <h3>✏️ 旅途記帳</h3>
+      <div class="exp-form">
+        <input type="text" id="expName" placeholder="品項名稱" class="full">
+        <input type="number" id="expAmt" placeholder="金額 (TWD)">
+        <select id="expCat">
+          <option value="交通">🚃 交通</option>
+          <option value="餐飲">🍜 餐飲</option>
+          <option value="購物">🛍️ 購物</option>
+          <option value="門票">🎫 門票/體驗</option>
+          <option value="住宿">🛏️ 住宿</option>
+          <option value="其他">📌 其他</option>
+        </select>
+        <button class="exp-add-btn full" id="expAddBtn">＋ 新增記錄</button>
+      </div>
+      <div class="exp-total"><span class="lbl">已花費總計</span><span class="val" id="expTotal">0</span></div>
+      <div class="exp-list" id="expList"><div class="exp-empty">還沒有記錄，出發後隨手記一筆吧！</div></div>
+      <div class="exp-sync-note" id="expSyncNote">資料會自動儲存</div>
+    </div>
+
+    <div class="shop-sub">✅ 確定採購清單（約12,015 TWD）</div>
+    <div class="shop-progress" id="progConfirmed"></div>
+    <div class="shop-grid" id="shopConfirmed"></div>
+
+    <div class="shop-sub">🔖 備選清單（以防萬一）</div>
+    <div class="shop-progress" id="progBackup"></div>
+    <div class="shop-grid" id="shopBackup"></div>
+
+    <div class="card" style="margin-top:16px;"><h3>🎁 伴手禮採購清單</h3><p>大部分品項集中在「JR名古屋高島屋 B1F」，排在 Day 5 晚上一次採購完成。</p><p>💡 點一下商品卡片就能標記已購買，再點一次可取消。</p></div>
+    <div class="shop-progress" id="progSouvenir"></div>
+    <div class="shop-grid" id="shopSouvenir"></div>
+
+    <div class="card" style="margin-top:18px;">
+      <h3>🍮 甜點店口袋清單</h3>
+      <p style="margin-bottom:10px;">GATTO、Hachi Cafe犬山店、Chou de kacha、Parlor Imom都已排入正式行程，這間是額外備選。</p>
+      <div class="spot-toggle" data-spot="dessert" style="margin-top:4px;">🍮 展開清單（1間）<span class="arw">▾</span></div>
+      <div class="spot-list" id="spots-dessert">
+        <div class="spot-item"><div class="no">🍮</div><div class="info"><div class="nm">Hachi Cafe 鶴舞店</div><div class="meta">愛知縣內另一分店（犬山店已排入Day5），就在鶴舞線「鶴舞」站附近——Day3從荒畑回上前津的途中會經過這一站，若時間充裕可以下車看看</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E3%83%8F%E3%83%81%E3%82%AB%E3%83%95%E3%82%A7%20%E9%B6%B4%E8%88%9E%E5%BA%97" target="_blank">導航</a></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px;">
+      <h3>☕ 咖啡廳・餐廳口袋清單</h3>
+      <p style="margin-bottom:10px;">依你的飲食偏好（喜歡肉、飯類、早午餐；不吃生菜）標註適合度。</p>
+      <div class="spot-toggle" data-spot="restaurant" style="margin-top:4px;">☕ 展開清單（8間）<span class="arw">▾</span></div>
+      <div class="spot-list" id="spots-restaurant">
+        <div class="spot-note" style="margin:0 0 8px;color:var(--sage);font-weight:700;">📍 西尾（Day5順路，但時間有衝突）</div>
+        <div class="spot-item"><div class="no">🐘</div><div class="info"><div class="nm">ぞうめし屋（西尾）</div><div class="meta">西尾市志籠谷町，西尾駅徒步12分・4.1星(675則)<br>味噌屋直營，招牌味噌煮込うどん、メンチカツ、抹茶拿鐵、甜甜圈<br><span style="color:var(--miso-light);">⚠️ 營業10:30-14:30／17:30-21:00分兩段，抹茶博物館行程剛好卡在休息時段，若要吃晚餐段會跟牛炙名駅別邸晚餐衝突</span></div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E3%81%9E%E3%81%86%E3%82%81%E3%81%97%E5%B1%8B%20%E8%A5%BF%E5%B0%BE" target="_blank">導航</a></div>
+        <div class="spot-note" style="margin:0 0 8px;color:var(--gold-light);font-weight:700;">🥩 高度符合喜好（肉／早午餐／飯類）</div>
+        <div class="spot-item"><div class="no">🍙</div><div class="info"><div class="nm">日々是好日 新栄店</div><div class="meta">中区新栄1-6-10 新栄ビル1F，栄駅步行範圍・打烊14:00（限午餐時段）<br>飯糰+濃郁豬肉味噌湯定食，直球飯類代表，座位較小客滿可外帶。☎052-262-3773</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E6%97%A5%E3%80%85%E6%98%AF%E5%A5%BD%E6%97%A5%20%E6%96%B0%E6%A0%84%E5%BA%97" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">✅</div><div class="info"><div class="nm">角角然然（已排入 Day6）</div><div class="meta">千種区末盛通1-15-2 壮苑覚王山1F・成為前往吉卜力公園途中的早午餐，見 Day6 09:40</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E8%A7%92%E8%A7%92%E7%84%B6%E7%84%B6%20%E8%A6%9A%E7%8E%8B%E5%B1%B1" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🍗</div><div class="info"><div class="nm">大銀杏 名駅店</div><div class="meta">中村区名駅4-13-13 FGビル4F・17:30-24:00・預算¥5,000-8,000<br>愛知縣產錦爽どり炭火燒鳥，自家製鹽調味，串2支起點。跟Chou de kacha同在名駅商圈</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E5%A4%A7%E9%8A%80%E6%9D%8F%20%E5%90%8D%E9%A7%85%E5%BA%97" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🍔</div><div class="info"><div class="nm">IN THIS FLAVOR</div><div class="meta">伏見／大須觀音站徒步4分・預算午1,500／晚3,000<br>白天美式早午餐（漢堡、三明治），晚上變身酒吧配餐酒。剛好在Day3大須路線上</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=IN%20THIS%20FLAVOR%20%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🍚</div><div class="info"><div class="nm">つけ麺本丸 栄店</div><div class="meta">栄駅徒步3分，マルエイガレリア1F・11:00-25:00・預算¥1,000-2,000<br>食べログ百名店，自家製沾麵＋品牌雞蛋吃到飽，可做卵かけご飯（蛋拌飯）。就在Day2榮商圈路線上</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E3%81%A4%E3%81%91%E9%BA%BA%E6%9C%AC%E4%B8%B8%20%E6%A0%84%E5%BA%97" target="_blank">導航</a></div>
+
+        <div class="spot-note" style="margin:12px 0 8px;color:var(--gold-light);font-weight:700;">🎨 職人取經／設計感</div>
+        <div class="spot-item"><div class="no">🌰</div><div class="info"><div class="nm">おかしな大地 from farm to spoon</div><div class="meta">千種区覚王山通9-15-2，覚王山駅徒步1-3分・10:00-19:00<br>百年栗子甜點老店「恵那川上屋」的新業態1號店，主廚坐鎮，栗子甜點限定款豐富，空間感佳</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E3%81%8A%E3%81%8B%E3%81%97%E3%81%AA%E5%A4%A7%E5%9C%B0%20%E8%A6%9A%E7%8E%8B%E5%B1%B1" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🍷</div><div class="info"><div class="nm">National Bakery</div><div class="meta">栄駅徒步1分<br>天然酒+麵包複合店，おまかせ8種¥3300，品牌調性強、空間規劃完整</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=National%20Bakery%20%E6%A0%84" target="_blank">導航</a></div>
+
+        <div class="spot-note" style="margin:12px 0 8px;color:var(--muted);font-weight:700;">⚠️ 含沙拉／生菜較多</div>
+        <div class="spot-item"><div class="no">🥞</div><div class="info"><div class="nm">BOND CAFE</div><div class="meta">中村区則武2-28-11，名古屋駅西口徒步7分（跟則武新町同一區）・11:30-22:30<br>隱藏庭院咖啡廳，鬆餅為招牌，但午餐主打沙拉吧</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=BOND%20CAFE%20%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🌽</div><div class="info"><div class="nm">YOUR,LATTE. YOUR,TIME.</div><div class="meta">名東区香南1-503<br>話題玉米麵包午餐盤，但附沙拉與湯，離市區較遠</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=YOUR%2CLATTE.%20YOUR%2CTIME.%20%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank">導航</a></div>
+
+        <div class="spot-note" style="margin:12px 0 8px;color:var(--muted);font-weight:700;">❓ 資訊待補充</div>
+        <div class="spot-item"><div class="no">☕</div><div class="info"><div class="nm">本山 de cafe HARUJI</div><div class="meta">千種区楠元町2丁目63・11:00-22:00・週二公休</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E6%9C%AC%E5%B1%B1%20de%20cafe%20HARUJI" target="_blank">導航</a></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px;">
+      <h3>🧸 玩具店口袋清單</h3>
+      <p style="margin-bottom:10px;">RPM 已排入 Day3 行程；另外兩間需額外繞路，有空檔可參考。</p>
+      <div class="spot-toggle" data-spot="toys" style="margin-top:4px;">🧸 展開清單（2間）<span class="arw">▾</span></div>
+      <div class="spot-list" id="spots-toys">
+        <div class="spot-item"><div class="no">🚂</div><div class="info"><div class="nm">Amazing Toy Shop Gateway</div><div class="meta">天白区大坪2-1701｜鶴舞線「塩釜口」站・13:00-19:00<br>各式復古玩具、公仔收藏，玩具迷朝聖店。與RPM同一條鶴舞線，但從上前津約再15分鐘</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=Amazing%20Toy%20Shop%20Gateway%20%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🧩</div><div class="info"><div class="nm">Kinder Land</div><div class="meta">南区城下町2-30｜名鐵「本笠寺」站・10:00-19:00<br>經典玩具到懷舊收藏。⚠️ 在Day4往河和的名鐵路線上，但特急不停本笠寺，需搭普通車</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=Kinder%20Land%20%E5%90%8D%E5%8F%A4%E5%B1%8B%20%E5%8D%97%E5%8C%BA" target="_blank">導航</a></div>
+        <div class="spot-note">⚠️ 出發前記得用 Google Maps 確認營業時間與公休日，以免撲空。</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px;">
+      <h3>🥐 麵包店口袋清單</h3>
+      <p style="margin-bottom:10px;">依「離行程遠近」排序，有空檔時再參考。⚠️ 營業時間與公休日請出發前用 Google Maps 確認。</p>
+      <div class="spot-toggle" data-spot="bakery" style="margin-top:4px;">🥐 展開清單（13間）<span class="arw">▾</span></div>
+      <div class="spot-list" id="spots-bakery">
+        <div class="spot-note" style="margin:0 0 8px;color:var(--gold-light);font-weight:700;">✅ 已在行程中</div>
+        <div class="spot-item"><div class="no">🍫</div><div class="info"><div class="nm">maison du miel</div><div class="meta">東區・中川區｜<b>JR高島屋B1F有櫃</b>，Day2／Day5 伴手禮採購時可買</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=maison%20du%20miel%20%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank">導航</a></div>
+
+        <div class="spot-note" style="margin:12px 0 8px;color:var(--miso-light);font-weight:700;">😢 這次去不了（時間衝突）</div>
+        <div class="spot-item"><div class="no">☕</div><div class="info"><div class="nm">Forelsket</div><div class="meta">中村区則武1丁目18-9｜就在則武新町/円頓寺同一區<br><span style="color:var(--miso-light);">⚠️ 公休週四 → 8/27正好是週四，這次撲空機會很大，下次改期再去</span></div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=Forelsket%20%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank">導航</a></div>
+
+        <div class="spot-note" style="margin:12px 0 8px;color:var(--gold-light);font-weight:700;">🎯 東山線沿線（Day6 順路）</div>
+        <div class="spot-item"><div class="no">🥖</div><div class="info"><div class="nm">Tôt le Matin Boulangerie</div><div class="meta">名東區一社1-33｜東山線「一社」駅徒步約5分・8:00開店<br><span style="color:var(--miso-light);">⚠️ 公休週一・週二 → 8/31是週一，很可能沒開</span></div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=Tot%20le%20Matin%20Boulangerie%20%E4%B8%80%E7%A4%BE" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🥐</div><div class="info"><div class="nm">NYU</div><div class="meta">千種區｜東山線沿線，Day6 可能順路</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=NYU%20%E3%83%91%E3%83%B3%20%E5%8D%83%E7%A8%AE%E5%8C%BA" target="_blank">導航</a></div>
+
+        <div class="spot-note" style="margin:12px 0 8px;color:var(--gold-light);font-weight:700;">🚇 市區內（需小繞路）</div>
+        <div class="spot-item"><div class="no">🥯</div><div class="info"><div class="nm">terre a terre</div><div class="meta">東區｜靠近榮／名古屋城一帶</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=terre%20a%20terre%20%E5%90%8D%E5%8F%A4%E5%B1%8B%E6%9D%B1%E5%8C%BA" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🥯</div><div class="info"><div class="nm">ソレハサテオキ</div><div class="meta">東區｜靠近榮／名古屋城一帶</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E3%82%BD%E3%83%AC%E3%83%8F%E3%82%B5%E3%83%86%E3%82%AA%E3%82%AD%20%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🍲</div><div class="info"><div class="nm">Vermicular Village</div><div class="meta">中川區｜鑄鐵鍋品牌 Vermicular 的複合設施，附設麵包坊</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=VERMICULAR%20VILLAGE" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🥖</div><div class="info"><div class="nm">Papipain（ブランジェリー ぱぴ・ぱん）</div><div class="meta">天白區植田｜10:00-19:00・週二三公休</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E3%83%96%E3%83%A9%E3%83%B3%E3%82%B8%E3%82%A7%E3%83%AA%E3%83%BC%20%E3%81%B1%E3%81%B4%E3%83%BB%E3%81%B1%E3%82%93" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🥐</div><div class="info"><div class="nm">an-J</div><div class="meta">綠區</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=an-J%20%E3%83%91%E3%83%B3%20%E7%B7%91%E5%8C%BA" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🍞</div><div class="info"><div class="nm">スーリープー（蘇里普麵包店）</div><div class="meta">名古屋市內</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E3%82%B9%E3%83%BC%E3%83%AA%E3%83%BC%E3%83%97%E3%83%BC%20%E3%83%91%E3%83%B3" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🍦</div><div class="info"><div class="nm">titbit!（ティットビット）雪糕</div><div class="meta">名古屋市內</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=titbit%20%E3%83%86%E3%82%A3%E3%83%83%E3%83%88%E3%83%93%E3%83%83%E3%83%88%20%E5%90%8D%E5%8F%A4%E5%B1%8B" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🌾</div><div class="info"><div class="nm">パン 芒種 ✅已排入Day2</div><div class="meta">西区那古野1-35-16（円頓寺商店街入口旁）｜10:30-18:00售完為止・週二三公休</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%B3%20%E8%8A%92%E7%A8%AE" target="_blank">導航</a></div>
+
+        <div class="spot-note" style="margin:12px 0 8px;color:var(--miso-light);font-weight:700;">🚗 需專程前往（來回1-2小時）</div>
+        <div class="spot-item"><div class="no">🌿</div><div class="info"><div class="nm">パンと庭</div><div class="meta">東鄉市</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=%E3%83%91%E3%83%B3%E3%81%A8%E5%BA%AD%20%E6%9D%B1%E9%83%B7" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">🥖</div><div class="info"><div class="nm">F to BREAD</div><div class="meta">岡崎市</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=F%20to%20BREAD%20%E5%B2%A1%E5%B4%8E" target="_blank">導航</a></div>
+        <div class="spot-item"><div class="no">☀️</div><div class="info"><div class="nm">SUN to F</div><div class="meta">港區・大府市</div></div><a class="go" href="https://www.google.com/maps/search/?api=1&query=SUN%20to%20F%20%E5%A4%A7%E5%BA%9C" target="_blank">導航</a></div>
+
+        <div class="spot-note">💡 <b>建議</b>：這趟行程已經很滿，麵包店可以當「臨時空檔的備案」。若真的很想去，東山線的兩間（Day6）跟東區兩間（Day2晚上）機會最大。</div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="bottomnav">
+    <button data-view="itinerary" class="active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8h18M4 8l-1 3M20 8l1 3M6 8v12M18 8v12M3 12h18"/></svg><span>行程</span>
+    </button>
+    <button data-view="transport">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="4" width="14" height="12" rx="3"/><path d="M5 12h14M8 16l-2 4M16 16l2 4"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/></svg><span>交通</span>
+    </button>
+    <button data-view="stay">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg><span>住宿</span>
+    </button>
+    <button data-view="packing">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M9 8V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2"/></svg><span>行李</span>
+    </button>
+    <button data-view="budget">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 8l3 4 3-4M12 12v5M9.5 14h5M9.5 16h5"/></svg><span>預算</span>
+    </button>
+  </nav>
+</div>
+
+<script>
+const MAP_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 1 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.4"/></svg>';
+const CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="#1C2333" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg>';
+
+function mapUrl(q){ return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(q); }
+
+const DAYS = [
+  { kanji:'一', date:'8/26（三）', title:'抵達日', accent:'#C9A227', items:[
+    { time:'18:15', title:'桃園機場起飛' },
+    { time:'22:00', title:'抵達關西機場T2', sub:'入境、通關（無託運行李，較快）' },
+    { time:'22:30', title:'前往 BESTIE - DOYANEN HOTELS', sub:'西成區，南海電鐵約40-45分' },
+    { time:'23:15', title:'抵達飯店，Check-in 休息', sub:'📍 1 Chome-14-17 Haginochaya, 西成區', map:'BESTIE DOYANEN HOTELS Osaka' }
+  ]},
+  { kanji:'二', date:'8/27（四）', title:'大阪早餐→移動名古屋→熱田神宮', accent:'#C9A227', guide:[
+    '<b>MONDAY VIBES COFFEE</b>：難波車站旁的新式咖啡酒吧，早上7點就開始供應早午餐菜單，法式吐司搭配香腸和半熟蛋、班尼迪克蛋都是招牌，晚上還能變身酒場。',
+    '<b>熱田神宮</b> ⛩️：日本第二神聖的神社（僅次伊勢神宮），供奉三神器之一「草薙劍」。參道被巨大楠木林包圍，寧靜莊嚴。<br>【主祭神】熱田大神（草薙神劍的神靈）、相殿五神：天照大神、素盞嗚尊、日本武尊、宮簀媛命、建稲種命<br>【可祈求】開運招福、家內安全、生意興隆、除厄消災、交通安全<br>【必看】本宮（神明造建築）、大楠（樹齡千年以上的神木，據說弘法大師手植）、信長塀（織田信長桶狹間戰勝後奉納的土牆，日本三大土牆之一）、寶物館（收藏刀劍類文物）',
+    '<b>TSUTAYA BOOKSTORE 則武新町</b>：2021年10月開幕，位於永旺夢樂城 Nagoya Noritake Garden 內。最出名的是連接1、2樓的巨大書牆藝術裝置，因為天花板做成鏡面設計，看起來比實際更加壯觀，是IG必拍打卡點。以「日本最想帶孩子去、孩子最想去的書店」為概念，繪本區特別豐富，還附設星巴克，可以邊喝咖啡邊翻閱未購買的書。旁邊就是Noritake の森（則武之森），紅磚建築與噴水廣場很適合散步。',
+    '<b>あつたnagAya</b>：2024年開幕的商業設施，就在神宮前駅西口。熱田自古是東海道的宿場町（驛站城鎮），這裡的建築刻意仿造當年街道旁的「長屋」造型。裡面聚集東海地區老店：大正14年創業的味噌煮込烏龍麵「大久手山本屋」（有限定豬角煮口味）、名古屋名物手羽先「風來坊」、蝦餅專賣「えびせんべいの里」等。',
+    '<b>円頓寺商店街</b> 🏮：位於名古屋站與名古屋城之間，是名古屋最古老的商店街之一。江戶時代家康「清須越」之後，因位於堀川、美濃路沿線，加上作為圓頓寺的門前町而發展。2015年拱廊翻新後，明治創業的老店與年輕人開的咖啡廳、特色小店並存，保留濃厚的下町風情，人潮不多不用排隊。裡面有間外觀寫著「ベビー用品のアオヤマ」的店，其實是麵包店「芒種」，櫃上擺著剛出爐的麵包，價格親民。附近還有保存區「四間道」，留有古老倉庫與屋頂神様。每月第1個週日有「ごえん市」、第3個週六有「星空市集」。',
+    '<b>IEN Bake house</b> 🥯：2025年1月開幕，位於栄駅2號出口正對面，由「つばめパン&Milk」母公司打造的麵包餐廳品牌，概念是「麵包＋柴窯烤爐貝果＋餐廳」。麵包櫃陳列現烤麵包與招牌柴窯貝果，只能外帶，賣完為止。內附小餐廳供應早午晚餐，氣氛時髦，週末常需排隊約1小時。',
+    '<b>Alpen NAGOYA</b>：2024年3月開幕，日本規模最大的旗艦店之一，ナディアパーク大樓B1F到5F共六層樓，約30萬件商品，分成Golf5、Sports Depo、Alpen Outdoors三個業態。',
+    '<b>mont-bell 名古屋栄店</b>：位於榮的地標「中日ビル」2樓，約230坪，栄駅直結，是名古屋規模最大的mont-bell門市。',
+    '<b>Chou de kacha（シューデカチャ）</b> 🥐：名古屋站徒步5分的泡芙專賣咖啡廳，僅7席吧台的小巧空間。招牌「堅果奶油泡芙」酥脆餅乾皮包著卡士達鮮奶油，用備長炭烘焙的咖啡豆沖泡的招牌配方咖啡也很受歡迎。',
+    '<b>Parlor Imom</b> ☕：位於榮商圈錦二丁目的咖啡廳，適合逛街途中的小憩片刻。',
+    '<b>天婦羅きしめん たもん</b>：きしめん（棊子麵/扁烏龍麵）是名古屋三大麵食之一，扁平寬麵吸附湯汁的口感跟一般烏龍麵完全不同。這間位於中日ビル，主打現點現炸的天婦羅配棊子麵，用京都原了郭的黑七味提香，天婦羅則搭配山椒鹽。',
+    '<b>丸善名古屋本店</b>：創立於明治2年（1869年），是日本第一間股份有限公司組織的書店，120多年來持續開拓新事業領域。名古屋本店B1F到5F共六層樓，專門書、雜誌、文具一應俱全，2F/6F還有藝廊常辦特展。',
+    '<b>名古屋城</b> 🏯：德川家康於1610年下令興建，作為尾張德川家的居城，與大阪城、熊本城並稱日本三大名城。屋頂上一對金鯱是名古屋的象徵。天守閣目前因木造復原工程暫停入內，但本丸御殿（2018年完成復原，襖繪與雕刻極盡華麗）與庭園可參觀（9:00-16:30）。夜間點燈至23:00，從外側看金鯱在燈光下閃耀，是另一種風情。',
+    '<b>綠洲21（オアシス21）</b>：2002年開業的立體都市公園，象徵是離地14公尺、盛滿水的玻璃大屋頂「水之宇宙船」，周圍是一圈約200公尺的空中迴廊，可以邊散步邊眺望電視塔與榮的街景。夜間點燈至23:00，每天20:00-20:03有紀念版「Celebration」燈光秀、21:00-21:03是人氣的彩虹點燈，22:00後轉為沉靜的「綠洲之夜」。夏季（6-8月）主題是宇宙船破浪前進與夜空煙火。地下的「銀河廣場」有約30間店舖。全區免費。',
+    '<b>SEANT（セアン）</b>：以「想珍惜長久使用的東西」為理念，從歐洲挑選文具、廚房用品、寢具，也有職人手工的皮革製品與帆布包。外觀是顯眼的藍色帳篷，逛起來很有國外選物店的氛圍。',
+    '<b>驛釜棊子麵</b>：きしめん（棊子麵/扁烏龍麵）是名古屋三大麵食之一，扁平寬麵吸附湯汁的口感跟一般烏龍麵完全不同，「驛釜」意指在車站現煮，是最道地的庶民美食。'
+  ], items:[
+    { time:'06:30', title:'飯店退房（行李輕便可直接隨身帶著走）' },
+    { time:'06:45', title:'前往難波', sub:'徒步／電車約10-15分' },
+    { time:'07:00', title:'早餐：MONDAY VIBES COFFEE', sub:'難波駅出口徒步1分，7:00開始供應，推薦法式吐司、班尼迪克蛋，✅ 已確認恢復營業', map:'MONDAY VIBES COFFEE 難波' },
+    { time:'08:00', title:'難波 → 新大阪站', sub:'地鐵御堂筋線約20-25分，¥290' },
+    { time:'08:30', title:'新大阪站搭新幹線 → 名古屋 🚄', sub:'⚠️ 從新大阪發車（非難波），約50分，自由席約¥5,800' },
+    { time:'09:20', title:'抵達名古屋' },
+    { time:'09:35', title:'前往榮商圈', sub:'地鐵約10-15分' },
+    { time:'09:50', title:'IEN Bake house 🥯', sub:'中区錦3-16-30，栄駅2號出口徒步約30秒。麵包+柴燒烤爐貝果聞名，開得早，先買外帶，⚠️ 只能外帶不能內用', map:'IEN Bake house 栄' },
+    { time:'10:10', title:'Alpen NAGOYA 運動用品／登山鞋購買 🎂', sub:'ナディアパーク，栄駅出口2徒步0分，B1F-5F，有95折免稅，用一雙舒服的新鞋開啟40歲生日獨旅', map:'Alpen NAGOYA ナディアパーク' },
+    { time:'10:50', title:'mont-bell 名古屋栄店 涼鞋試穿購買', sub:'中日ビル2F，栄駅直結（⑫⑬出口）', map:'モンベル名古屋栄店' },
+    { time:'11:10', title:'丸善名古屋本店', sub:'愛知縣最大書店，栄駅8號出口徒步4分，10:00-21:00', map:'丸善名古屋本店' },
+    { time:'11:35', title:'SEANT（セアン）', sub:'藍色帳篷生活選物店，矢場町駅徒步6分，11:00-20:00（週三18:00休）', map:'SEANT セアン 名古屋' },
+    { time:'11:55', title:'Parlor Imom ☕', sub:'中区錦2-5-30 1F，榮商圈內。✅ 已確認週四有營業', map:'Parlor Imom 名古屋' },
+    { time:'12:15', title:'名古屋PARCO：Loft／Village Vanguard 找麵包小偷 🍞', sub:'⚠️ 人氣角色常缺貨，建議多逛幾間', map:'名古屋PARCO' },
+    { time:'12:40', title:'午餐／輕食：天婦羅きしめん たもん 🍤', sub:'中日ビル1F（跟mont-bell同棟樓），名古屋名物棊子麵配天婦羅', map:'天婦羅きしめん たもん 中日ビル店' },
+    { time:'13:05', title:'前往熱田神宮', sub:'栄駅轉名城線→熱田神宮西駅，約13-15分，不用繞回名古屋站' },
+    { time:'13:20', title:'熱田神宮參拜', sub:'24小時開放，境內腹地大可慢慢走', map:'熱田神宮' },
+    { time:'14:30', title:'あつたnagAya 逛街', sub:'神宮前駅西口徒步1分，2024年開幕的長屋造型商業設施。午餐已在たもん解決，這裡自由逛街，想加點心可買風來坊手羽先、大久手山本屋味噌煮込烏龍麵、えびせんべいの里蝦餅', map:'あつたnagAya' },
+    { time:'15:30', title:'返回名古屋站', sub:'名鐵約6分' },
+    { time:'15:45', title:'Chou de kacha（シューデカチャ） 🥐', sub:'中村区名駅3-11-14 D&Mビル1F，名古屋站徒步約5分。泡芙專賣店，招牌「堅果奶油泡芙」，僅7席吧台，⚠️ 11:00-18:00營業，先來這裡處理（週一二公休，8/27週四OK）', map:'Chou de kacha 名古屋駅' },
+    { time:'16:05', title:'前往則武新町', sub:'地鐵約10分' },
+    { time:'16:15', title:'TSUTAYA BOOKSTORE 則武新町 📚', sub:'永旺夢樂城 Nagoya Noritake Garden 內，名古屋站徒步約10分。1、2樓間的巨大書牆藝術裝置，附設星巴克，10:00-21:00', map:'TSUTAYA BOOKSTORE 則武新町' },
+    { time:'16:45', title:'順遊 Noritake の森（則武之森）', sub:'就在旁邊，紅磚建築、噴水廣場，可買陶瓷餐具', map:'ノリタケの森' },
+    { time:'17:05', title:'円頓寺商店街 ＋ パン芒種 ＋ 四間道 🏮', sub:'那古野1-6-10，國際中心站徒步8分。名古屋最古老商店街之一，江戶時代起，老店與年輕人的咖啡廳並存，昭和風情。 🥖 パン芒種（那古野1-35-16，商店街入口旁）10:30-18:00 售完為止，⚠️ 這個時段還有充裕時間，週二三公休（8/27週四OK） 🏘️ 四間道：保存區，古老倉庫與屋頂神様', map:'円頓寺商店街' },
+    { time:'18:00', title:'前往名古屋站', sub:'地鐵約10-15分' },
+    { time:'18:15', title:'Salomon 防水登山鞋試穿購買', sub:'ゲートタワーモール 4F 409號（東海地區唯一直營店，10:00-21:00）', map:'サロモンストア タカシマヤゲートタワーモール' },
+    { time:'18:45', title:'順路逛 JR名古屋高島屋 B1F 伴手禮樓層', sub:'同一棟樓，可先看坂角總本舖蝦餅、BUTTER STATE\'s、maison du miel 等，耐放的可先買，怕熱的建議Day5再買', map:'JR名古屋タカシマヤ' },
+    { time:'19:10', title:'BOUL\'ANGE（ブーランジェ） 🥖', sub:'JR名古屋高島屋北ブロック1F デリシャスコート，JR名古屋站直通（同一棟樓）。烘焙職人取經必逛，08:00-20:00', map:'BOUL\'ANGE JR名古屋高島屋' },
+    { time:'19:30', title:'生日晚餐：Katuretu MATUMURA 🎂🍖', sub:'中村区名駅3-28-28 大名古屋大廈3F，跟BOUL\'ANGE同在名駅商圈。炸豬排／味噌カツ，17:00開始營業', map:'Katuretu MATUMURA 名古屋' },
+    { time:'20:15', title:'前往飯店', sub:'名駅→飯店約10-15分' },
+    { time:'20:30', title:'BASE LAYER HOTEL 辦理入住', sub:'放下行李，輕鬆去看夜景' },
+    { time:'20:45', title:'前往榮商圈', sub:'飯店(錦)離榮很近，徒步約5-10分即可，不用搭車' },
+    { time:'20:55', title:'綠洲21「水之宇宙船」夜景 ✨', sub:'榮駅旁（走路即到），免費入場。玻璃大屋頂盛滿水，夜間點燈至23:00。⚠️ 空中迴廊開放至21:00，21:00-21:03有彩虹點燈（剛好趕上），夏季主題是海浪與煙火', map:'オアシス21' },
+    { time:'21:30', title:'前往名古屋城', sub:'榮駅→地下鐵名城線→市役所駅，約10分' },
+    { time:'21:45', title:'名古屋城 點燈夜景（外觀） 🏯', sub:'市役所駅徒步5分。⚠️ 園內9:00-16:30已閉園，此時只能從外側欣賞點燈的天守閣，點燈至23:00，金鯱在燈光下特別醒目', map:'名古屋城' },
+    { time:'22:25', title:'返回飯店休息', sub:'市役所→地下鐵約10-15分' },
+  ]},
+  { kanji:'三', date:'8/28（五）', title:'清洲城→POPEYE→骨董市→東別院朝市', accent:'#9C4A3C', guide:[
+    '<b>清洲城</b>：織田信長崛起之地，也是「清洲會議」（決定信長身後豐臣秀吉勢力版圖的歷史會議）的舞台。天守閣雖是後代重建，但金色外觀搭配護城河景致，清晨陽光下拍照特別漂亮，遊客也少。',
+    '<b>伏見町POPEYE</b>：2023年7月開幕就在社群上爆紅的排隊名店，概念是「如果歐洲有定食屋」，中世紀風格的懷舊裝潢配上日式定食與飯糰。跟名古屋常見的咖啡店晨間套餐（吐司+咖啡）完全不同，這裡是烤魚、炸物、丼飯等紮實的定食早餐，招牌「レアアジフライ卵黄定食」（半熟炸竹筴魚配蛋黃）連在地武將隊都推薦。',
+    '<b>NERO</b> 🥖：地鐵庄内緑地公園站徒步1分的鹽麵包專門店，外層酥脆、內餡奶油香氣濃郁，明太子口味直接塞滿內餡，堅果和起司款也很受歡迎。每天不同時段都有新鮮出爐，每次來都可能遇到不同口味。',
+    '<b>伊奴神社</b> 🐕：創建於天武天皇時代（673年），已有1350多年歷史。<br>【主祭神】素盞嗚尊、大年神、<b>伊奴姫神</b>（大年神之妃）<br>【可祈求】<b>安產、求子、育兒、夫婦圓滿、家內安全</b>（因為狗生產順利，自古被視為安產之神）<br>【必求】狛犬造型御守、犬みくじ（狗之王形狀的籤，¥500）、御朱印帳¥2,300含御朱印／單張御朱印¥300（書置形式）<br>【必看】「犬の王」石像（就在神殿前）、境內末社玉主稲荷神社、白龍社與神木<br>【小提醒】鳥居旁有自動販賣機，忘記準備香油錢零錢也沒關係。<br>相傳古時庄内川年年氾濫，村民苦不堪言，一位雲遊山伏（修行者）作法止住水患後，留下一個御幣（祈福紙串）並叮囑村民絕不能打開。好奇的村民還是拆開了，裡面竟畫著一隻狗、寫著「犬の王」（狗之王）幾字，隔年河川果然又氾濫成災。山伏再次前來，村民坦承一切後，山伏指示將御幣埋起並建社供奉，伊奴神社由此而生。主祭神伊奴姫神以安產、育兒祈願聞名，境內滿是狗狗造型的石像、繪馬和御守，還有專為狗狗祈福的御守——不過神社本身不開放攜帶寵物入內，只能到鳥居前。',
+    '<b>東別院 暮らしの朝市</b>：2013年開始的愛知縣最大朝市，每月8、18、28日在真宗大谷派名古屋別院（東別院）的廣闊境內舉辦。理念是「透過購物產生新的相遇，讓生活更豐富」。三個日期各有特色：8日主打有機自然派、18日是個性小店、28日則是創始元老攤商雲集，有大排長龍的人氣甜點店、手工豆腐、手工魚板、醃漬物、米粉麵包、天然酵母麵包、鹹派、韓式家常菜等，美食特別豐富。',
+    '<b>大須觀音骨董市</b>：每月18日與28日在大須觀音境內舉辦的古董市集，器皿、和服、古著、昔日玩具、相機器材、古董雜貨琳瑯滿目地擺滿整個境內，很適合挖寶。清晨6點就開始（3-10月），但中午過後就有店家陸續收攤，想好好逛建議早點到。',
+    '<b>大須觀音寺</b> 🛕：日本三大觀音之一，本堂內收藏過的古文獻曾列入國寶。<br>【本尊】聖觀音<br>【可祈求】消災解厄、心願成就、開運<br>【必看】真福寺文庫（收藏古事記最古老的抄本等一萬五千冊珍貴古籍）<br>',
+    '<b>大須美食踩點動線</b> 🍡：五間店都在大須商店街範圍內。從大須觀音站進入商店街時，先逛②覚王山フルーツ大福、③SMASH HEAD（大須觀音站側），再往東走到①有象無象、④珈琲ぶりこ、⑤喫茶ジェラシー（上前津站側），一路逛過去不用回頭。⚠️ 營業時間與公休日建議出發前用 Google Maps 確認。',
+    '<b>EGORAPIN\'（エゴラピン）</b> 🥯：2025年7月在南大須地區開幕的咖啡貝果店，位置是「南大須ビル」1-2F，原址曾是佛具店。由榮的人氣咖啡廳「Shibuya」同集團（株式会社5TAP）打造，主打貝果配講究咖啡與湯品，內裝是清水模結構搭配玻璃磚，加上相思木溫潤木紋。櫃檯還放著小盒線香免費贈送，呼應這裡曾是大須南側佛具街的歷史。',
+    '<b>#C-pla 扭蛋店</b>：愛知縣公認扭蛋密度最高的店，來這裡「課金」是大須文化體驗的一部分。',
+    '<b>Mandarake</b>：日本知名次文化連鎖店，逛起來像挖寶，絕版扭蛋玩具常有驚喜。',
+
+    '<b>麵家獅子丸</b>：「洋風拉麵」白湯湯底加柴魚、鯖魚、羅臼昆布等和風出汁，濃郁卻不厚重，一個人也能自在用餐。',
+    '<b>仁王門湯</b>：昭和24年（1949年）創業的老字號錢湯，就藏在大須商店街轉進一條巷子裡，保留了傳統「番台」形式，是現在很少見的懷舊風格。以「激熱湯」聞名，浴池溫度分好幾階，最熱的接近48度；桑拿溫度高達100-102度，濕度平衡得好所以意外好待，冷水池約18度。只要¥550（桑拿+¥100），CP值極高，是很在地的名古屋生活體驗。'
+  ], items:[
+    { time:'06:30', title:'出發前往清洲城', cost:'JR名古屋→清洲駅約7分＋步行15分' },
+    { time:'07:00', title:'清洲城外觀拍照', sub:'⚠️ 天守閣室內展示9:00才開放，此時段僅供外觀拍照：天守閣、清洲公園、信長・濃姫銅像、五条川沿岸', map:'清洲城' },
+    { time:'08:00', title:'返回名古屋', cost:'JR約7分＋步行15分' },
+    { time:'08:30', title:'前往伏見駅', cost:'地下鐵約10分' },
+    { time:'08:50', title:'抵達伏見町POPEYE', sub:'伏見駅4號出口徒步1分' },
+    { time:'09:00', title:'早餐：伏見町POPEYE ✅已訂位', sub:'預約ID：CCTASV，1名。定食風格早餐（烤魚、炸物、丼飯），不用排隊', map:'伏見町POPEYE' },
+    { time:'10:00', title:'前往大須觀音', cost:'伏見→鶴舞線2站，約5分' },
+    { time:'10:10', title:'大須觀音骨董市 ＋ 參拜 🏺', sub:'每月18、28日限定，境內6:00-15:00。此時攤商最齊全（中午起陸續收攤）。器皿、和服、古著、老相機、古董玩具', map:'大須観音' },
+    { time:'11:30', title:'前往東別院', cost:'上前津轉名城線，約10-15分' },
+    { time:'11:45', title:'東別院 暮らしの朝市 🥐（今日重點）', sub:'真宗大谷派名古屋別院境內，10:00-14:00（可逛到13:40）。愛知縣最大朝市。28日場特色：創始元老攤商多，排隊人氣甜點店、手工豆腐、米粉麵包、天然酵母麵包、鹹派、韓式家常菜。可在此吃午餐', map:'東別院 真宗大谷派名古屋別院' },
+    { time:'13:45', title:'前往庄内緑地公園', cost:'上前津轉鶴舞線，約38分' },
+    { time:'14:25', title:'NERO 🥖', sub:'地鐵庄内緑地公園站徒步1分。鹽麵包專門店，外層酥脆、內餡奶油香濃，明太子/堅果/起司口味人氣爆棚，每天不同時段新鮮出爐', map:'NERO 庄内緑地公園' },
+    { time:'14:45', title:'前往庄内通', cost:'鶴舞線1站，約3分' },
+    { time:'14:50', title:'伊奴神社參拜 🐕', sub:'「庄内通」駅1號出口徒步10-15分。⚠️ 社務所/祈禱受付 9:30-16:30，務必在此前抵達才拿得到狗狗御守、御朱印、犬みくじ（¥500）。御朱印帳¥2,300（含御朱印）', map:'伊奴神社' },
+    { time:'15:45', title:'RPM Toy & Collectables 🧸', sub:'昭和区御器所4-12-5，鶴舞線「荒畑」站。庄内通→荒畑鶴舞線直達不用換車（約25分）。主打美式復古玩具、模型與收藏品，尋寶天堂。⚠️ 12:00-18:00', map:'RPM Toy Collectables 名古屋' },
+    { time:'16:40', title:'返回上前津（RPM回程）', cost:'荒畑→上前津鶴舞線約5分' },
+    { time:'16:45', title:'EGORAPIN\'（エゴラピン）🥯', sub:'中区門前町3-26-2 南大須ビル1-2F，上前津站7號出口徒步5分／大須觀音站2號出口徒步7分。2025年7月開幕的貝果咖啡廳（榮人氣店Shibuya同集團），清水模+玻璃磚空間，貝果三明治配咖啡、湯品', map:'EGORAPIN 名古屋大須' },
+    { time:'17:15', title:'前往大須觀音周邊', cost:'徒步約7-8分' },
+    { time:'17:25', title:'Mandarake（扭蛋機主機/tamagotchi）', sub:'營業12:00-20:00', map:'Mandarake Nagoya' },
+    { time:'18:05', title:'大須商店街逛街', sub:'#C-pla扭蛋、文具雜貨、二手店', map:'#C-pla 名古屋大須店', spots:[
+      { emoji:'①', nm:'有象無象（UZOMUZO）', addr:'中区大須3-9-18 塚本ビル1F', walk:'上前津站9號出口徒步4分／矢場町站徒步7分', q:'有象無象 UZOMUZO 名古屋大須' },
+      { emoji:'②', nm:'覚王山フルーツ大福 弁才天 🍓', addr:'中区大須2-17-3', walk:'大須觀音站徒步5分／上前津站徒步8-10分', q:'覚王山フルーツ大福 弁才天 大須店' },
+      { emoji:'③', nm:'SMASH HEAD', addr:'中区大須2-21-90', walk:'大須觀音站2號出口徒步1分', q:'SMASH HEAD 名古屋大須' },
+      { emoji:'④', nm:'珈琲ぶりこ ☕', addr:'中区大須3-35-22', walk:'上前津站8號出口徒步3分', q:'珈琲ぶりこ 名古屋大須' },
+      { emoji:'⑤', nm:'喫茶ジェラシー ☕', addr:'中区大須3-29-22 オカモトビル2F', walk:'上前津站8號出口徒步2分', q:'喫茶ジェラシー 名古屋大須' },
+    ]},
+    { time:'19:00', title:'麵家 獅子丸 拉麵晚餐', map:'麵家獅子丸 名古屋' },
+    { time:'20:30', title:'仁王門湯 泡湯 ♨️', sub:'昭和24年創業老錢湯，大須商店街內，上前津駅徒步4分。⚠️ 營業至22:30，桑拿21:00結束（只剩約30分鐘，時間較趕）。需自備沐浴用品，毛巾免費借用', cost:'¥550＋桑拿¥100', map:'仁王門湯 名古屋' }
+  ]},
+  { kanji:'四', date:'8/29（六）', title:'日間賀島＋常滑', accent:'#C97B4A', guide:[
+    '<b>日間賀島</b>：以章魚和河豚聞名的迷你島，路標用章魚（西側）、河豚（東側）圖案標示方向，環島腳踏車約1小時繞完。',
+    '<b>常滑</b>：日本六大古窯之一，因製陶產業聞名，招き猫通り沿路擺滿各式招財貓雕像，見守り猫「とこにゃん」是地標級巨型招財貓。陶瓷散步道「土管坂」保留了昔日燒陶的老窯與工廠牆面，很有懷舊氛圍。',
+    '<b>ni:no</b>：常滑「やきもの散歩道」上的隱藏咖啡廳，由土管工廠改建，1樓是雜貨選物、2樓是咖啡廳，保留工廠厚重樑柱搭配休閒家具，古民家氛圍濃厚。草莓系甜點特別有名。',
+    '<b>KITCHEN macha</b>：位於南知多町（日間賀島所屬區域）的義式餐廳，供應義大利麵與披薩。',
+    '<b>鈴円本舗</b>：日間賀島西港旁的蝦仙貝專賣店，島上人與觀光客都自然會走過去的老店。招牌是「海老こみじゃ」──赤車蝦浸過秘傳醬汁後，在店頭壓製機上高溫一口氣壓烤，蝦子被壓得扁扁的，殼的香氣整個爆開。除了蝦仙貝，也有整隻的烤花枝、烤章魚，禮盒裝的「島風」系列很適合當伴手禮。',
+    '<b>コビトカバ</b>：名駅西口的人氣居酒屋，主打名古屋名物與各式家常小菜（おばんざい），串燒特別受好評，日本酒與啤酒選擇豐富。氣氛輕鬆親切，適合一個人小酌。⚠️ 週日與國定假日公休。'
+  ], items:[
+    { time:'06:45', title:'早餐：名古屋站便利商店或站內麵包店', sub:'出發前簡單墊胃即可' },
+    { time:'07:15', title:'名古屋站出發（名鉄河和線特急）→ 河和', sub:'⚠️ 請先確認清晨首班特急時刻', cost:'約45分' },
+    { time:'08:00', title:'抵達河和駅，步行至河和港', sub:'徒步約5分（特急乘客可搭免費接駁巴士）' },
+    { time:'08:15', title:'搭高速船 → 日間賀島', sub:'⚠️ 請先確認清晨首班船時刻', cost:'約20分・單程¥1,600' },
+    { time:'08:35', title:'鈴円本舗（西港下船即到）🦐', sub:'日間賀島西浜28，8:00-17:00無休。現烤蝦仙貝「海老こみじゃ」（赤車蝦壓製高溫烤製）、整隻烤花枝／烤章魚，也是伴手禮好選擇', map:'鈴円本舗 日間賀島' },
+    { time:'09:00', title:'日間賀島散策', sub:'東西モニュメント（がっしー/にっしー）、環島腳踏車', map:'日間賀島' },
+    { time:'10:45', title:'午餐：KITCHEN macha 🍝', sub:'南知多町（日間賀島區域），義式料理／義大利麵／披薩。⚠️ 出發前請確認當日營業與位置', map:'KITCHEN macha 南知多' },
+    { time:'11:40', title:'搭高速船返回河和港', sub:'日間賀島西港→河和港班次：06:50/08:20/09:25/10:20/11:40/13:20/14:20/15:40/16:40/17:45（⚠️出發前請再確認當日班表）', cost:'約20分' },
+    { time:'11:50', title:'河和駅轉乘名鉄常滑線 → 常滑', cost:'約30-40分（太田川駅轉乘）' },
+    { time:'12:30', title:'抵達常滑站' },
+    { time:'12:40', title:'招き猫通り散策', map:'とこなめ招き猫通り' },
+    { time:'13:20', title:'見守り猫「とこにゃん」拍照' },
+    { time:'13:50', title:'やきもの散歩道（陶瓷散步道）', sub:'土管坂、紅磚煙囪、黑牆工房，A路線約1.6km／1小時' },
+    { time:'15:00', title:'下午茶：ni:no ☕', sub:'常滑やきもの散歩道上的隱藏咖啡廳，土管工廠改建，1F雜貨店＋2F咖啡廳，草莓甜點聞名。⚠️ 建議先確認公休日', map:'ni:no 常滑' },
+    { time:'16:15', title:'返回名古屋', cost:'特急約35分' },
+    { time:'17:00', title:'名古屋市區／名駅周邊散步', sub:'不回飯店，直接在市區晃到晚餐時間' },
+    { time:'19:00', title:'晚餐：コビトカバ（居酒屋）', sub:'名駅5-20-7，名駅西口／國際中心駅徒步範圍，週六18:00-24:00（L.O.23:00），名古屋名物、串燒配日本酒。⚠️ 週日公休', map:'コビトカバ 名古屋 名駅' }
+  ]},
+  { kanji:'五', date:'8/30（日）', title:'犬山城＋西尾抹茶 🏯🍵', accent:'#3D6B7A', warn:'這是全程最硬的一天，犬山城（北）跟西尾（東南）方向相反，中間需要回名古屋轉車，時間抓得很緊', guide:[
+    '<b>犬山城</b>：日本現存12座江戶時代以前建造的「國寶天守」之一，也是最古老的木造城堡，可俯瞰有「日本萊茵河」之稱的木曾川。',
+    '<b>GATTO</b> 🍮：位於犬山城下町商店街尾端的隱藏甜點店，門面低調不顯眼，正因如此更值得特地尋找。招牌是馬斯卡彭起司布丁，濃郁綿密，搭配熱牛奶或紅茶是絕佳的下午茶組合。',
+    '<b>Hachi Cafe 犬山店</b> 🍮：名鉄犬山駅西口1F、駅直結的塔派與三明治專賣店，愛知縣內共有兩間分店（名古屋鶴舞、犬山）。招牌是**犬山限定的布丁塔**——酥脆塔皮配上濃郁卡士達布丁，是犬山觀光後最順路的甜點小憩。<br><b>三光稲荷神社</b> 🦊：位於犬山城山麓，是織田信長叔父織田信康公崇敬的神社，江戶時代起為犬山城主成瀬家歷代守護神。<br>【主祭神】宇迦御魂大神、猿田彦大神、大宮女大神<br>【可祈求】家內安全、生意興隆、開運除厄、交通安全<br>【境內三個末社，各有所求】<br>　🩷 <b>姫亀神社</b>（大宮女大神）：男女良緣、夫婦和合、家內圓滿 → 粉紅愛心繪馬¥500在社務所請領，寫上願望掛在繪馬台，是IG打卡點<br>　💰 <b>銭洗稲荷神社</b>：金運上升 → 在社務所奉納¥100領竹簍與蠟燭，用御神水洗錢，據說會加倍「回來」（日文的青蛙カエル與回來同音）<br>　🧭 <b>猿田彦神社</b>（開路之神）：方位除厄、開運、事業發展、交通安全<br>【還可以玩】本殿旁的「おもかる石」：閉眼許願後抬石頭，覺得輕就代表願望會實現<br>【御朱印】三光稲荷神社¥500／猿田彦神社¥500／兩社合記¥800；京都西陣織御朱印帳¥1,500',
+    '<b>完全個室焼肉 牛炙 名駅別邸</b>：名駅商圈的高級燒肉店，全席完全個室，主打段戸牛、鳳来牛等愛知在地和牛品牌。裝潢走沉穩大人風，附氣泡酒的「アニバーサリーコース」很適合慶祝場合，跟名古屋站保持一點距離、不用回到榮商圈用餐。',
+    '<b>西尾抹茶</b>：西尾是日本數一數二的抹茶產地，茶葉栽培始於1271年創建的実相寺，之後紅樹院從京都宇治引進茶種、廣招茶師，讓抹茶產業扎根發展。「西条園 和く和く」是老牌抹茶廠あいや（創業1888年）直營的體驗博物館，能看石臼碾茶、動手調配茶葉、體驗點茶。'
+  ], items:[
+    { time:'08:00', title:'名鉄名古屋站出發（特急/ミュースカイ）→ 犬山駅', cost:'約25-29分・約¥690' },
+    { time:'08:30', title:'抵達犬山駅，徒步前往犬山城', sub:'約20分，途經城下町' },
+    { time:'08:50', title:'犬山城下町清晨散策', sub:'趁店家未開、人潮最少時先拍照走走' },
+    { time:'09:00', title:'犬山城天守閣參觀', sub:'國寶古城，開城即入場，可登城眺望木曾川', map:'犬山城' },
+    { time:'11:00', title:'三光稲荷神社／針綱神社', sub:'犬山城旁順遊，愛心繪馬聞名', map:'三光稲荷神社' },
+    { time:'11:30', title:'城下町午餐', sub:'田楽、五平餅等小吃' },
+    { time:'12:00', title:'城下町散策購物', sub:'伴手禮、和風小物' },
+    { time:'12:20', title:'GATTO 🍮', sub:'犬山市西籠町79番地，位於城下町商店街尾端，門面低調需特地尋找。招牌馬斯卡彭起司布丁配熱牛奶或紅茶，絕佳下午茶。☎+81 568-50-2224', map:'GATTO 犬山' },
+    { time:'12:45', title:'Hachi Cafe 犬山店 🍮', sub:'犬山市犬山富士見町14，名鉄犬山駅西口1F，駅直結徒步1分。タルト與三明治專賣，招牌是犬山限定布丁塔，10:00-18:00・週二公休（8/30週日OK）', map:'ハチカフェ 犬山店' },
+    { time:'13:00', title:'返回名古屋', cost:'特急約25-29分' },
+    { time:'13:30', title:'抵達名古屋' },
+    { time:'14:00', title:'名古屋站出發（名鉄西尾線特急）→ 西尾駅', cost:'約50分・約¥570' },
+    { time:'14:50', title:'抵達西尾駅，搭計程車前往抹茶ミュージアム', sub:'西条園 和く和く，約10分車程' },
+    { time:'15:15', title:'抹茶博物館體驗', sub:'⚠️ 需事先預約（一人也可）：石臼碾茶見學、調配茶葉、點茶體驗、試飲試食高級抹茶甜點', map:'抹茶ミュージアム 西条園 和く和く' },
+    { time:'16:45', title:'若時間允許：順遊実相寺或西尾城跡', sub:'西尾茶起源古寺', map:'実相寺 西尾' },
+    { time:'17:15', title:'計程車返回西尾駅，搭特急返回名古屋', cost:'約50分' },
+    { time:'18:20', title:'抵達名古屋' },
+    { time:'18:30', title:'（彈性）TSUTAYA BOOKSTORE 名鉄名古屋 📚', sub:'名鉄百貨店本館8F，車站旁徒步0分。生活提案型書店，主打食/美容/生活/旅行選書＋文具雜貨。⚠️ 19:00關門，只能快速逛約25分鐘，太累可直接跳過', map:'TSUTAYA BOOKSTORE 名鉄名古屋' },
+    { time:'19:05', title:'晚餐：完全個室焼肉 牛炙 名駅別邸 🥩', sub:'中村区名駅4-2-9 名駅クリスタルビル1-2F，國際中心站徒步2分／JR名古屋駅徒步6分（不會回到榮商圈）。全席完全個室，段戸牛、鳳来牛等在地和牛品牌，附氣泡酒的アニバーサリーコース(¥9,000)適合慶祝。⚠️ 完全個室常有訂位限制，建議先電話確認1人可訂。☎050-5486-3252', map:'完全個室焼肉 牛炙 名駅別邸' },
+    { time:'20:15', title:'伴手禮採購：JR名古屋高島屋 B1F', sub:'榮→名古屋站地鐵約5分。坂角總本舖、BUTTER STATE系列、maison du miel等。⚠️ 高島屋B1F營業至20:00，若來不及可改隔天機場採購或提前於Day2買齊', map:'JR名古屋タカシマヤ' }
+  ]},
+  { kanji:'六', date:'8/31（一）', title:'覚王山早午餐→吉卜力公園→賦歸', accent:'#4C6B4F', guide:[
+    '<b>角角然然</b> 🍙：千種区末盛通1-15-2，覚王山商圈的人氣食堂，4.3星（60則評論）。招牌是飯糰配濃郁鮮魚湯的定食組合，10:00開始營業，跟同商圈的「おかしな大地」都是覚王山值得專程一訪的店家。',
+    '<b>吉卜力公園</b>：由「愛・地球博」舊址改建，還原《龍貓》、《神隱少女》等作品場景，不像美術館以展示為主，更像走進電影場景本身漫步。時間有限時建議只專攻「大倉庫」一區，青春之丘、魔女之谷等距離較遠，貪多會每個地方都走馬看花。',
+    '<b>SOLA SPA 風の湯</b>：中部機場內少見的正統溫泉浴場，能一邊泡湯一邊眺望飛機起降跑道，機場限定的奇妙體驗。'
+  ], items:[
+    { time:'09:00', title:'飯店退房，帶著全部行李出發', sub:'今晚不回名古屋' },
+    { time:'09:20', title:'名古屋站→地下鐵東山線→覚王山站', cost:'約15分・行李較多注意月台間移動' },
+    { time:'09:40', title:'抵達覚王山，前往角角然然', sub:'千種区末盛通1-15-2 壮苑覚王山1F，稍作等候至開店' },
+    { time:'10:00', title:'早午餐：角角然然 🍙', sub:'4.3星(60則)・¥1,000-2,000。飯糰+定食風格早餐，濃郁鮮魚湯品', map:'角角然然 覚王山' },
+    { time:'10:40', title:'前往藤が丘', cost:'覚王山→藤が丘，東山線繼續同方向，約20分' },
+    { time:'11:00', title:'藤が丘轉乘リニモ', cost:'約15分・¥670' },
+    { time:'11:15', title:'抵達「愛・地球博記念公園」站' },
+    { time:'11:30', title:'領取手環', sub:'⚠️ 10:00-12:00開放，時間較緊，務必準時' },
+    { time:'11:45', title:'行李寄放園區置物櫃', cost:'置物櫃約¥300-500', sub:'剩餘時間簡單走走或直接排隊等候入場' },
+    { time:'13:00', title:'吉卜力公園入場，直奔大倉庫', sub:'已購票，從入口最近，避免繞路' },
+    { time:'13:05', title:'屋頂庭園「機械帝國守衛兵」拍照', sub:'天空之城機械兵雕像，必拍地標' },
+    { time:'13:20', title:'大倉庫室內常設展示', sub:'動畫工作室還原、經典場景展示（神隱少女、霍爾等）' },
+    { time:'13:45', title:'貓巴士房間外觀拍照', sub:'入內遊玩限12歲以下兒童，成人可在外拍照' },
+    { time:'14:00', title:'マンマユート商店 紀念品店', sub:'快速採購' },
+    { time:'14:10', title:'取回寄放的行李' },
+    { time:'14:30', title:'前往公園入口巴士站', sub:'⚠️ 出發前請上名鉄バス官網再次確認實際發車時刻' },
+    { time:'15:00', title:'【藤が丘-セントレア 名鉄バス】發車', sub:'直達車，免轉車' },
+    { time:'16:25', title:'抵達中部國際機場 第1航廈', cost:'全程約85分' },
+    { time:'16:45', title:'SOLA SPA 風の湯 泡湯放鬆', cost:'約¥1,300-1,500', map:'SOLA SPA 風の湯 中部国際空港' },
+    { time:'18:30', title:'風の湯食堂 or 機場餐廳晚餐' },
+    { time:'20:00', title:'整理行李、辦理登機手續' },
+    { time:'21:45', title:'飛機起飛' },
+    { time:'23:45', title:'抵達桃園機場' }
+  ]}
+];
+
+// 每天的地圖關鍵點位（精簡版，非完整行程每一站）
+const MAP_POINTS = [
+  [ // Day1
+    { lat:34.4320, lng:135.2304, name:'關西國際機場', query:'関西国際空港', emoji:'✈️' },
+    { lat:34.6519, lng:135.4919, name:'BESTIE - DOYANEN HOTELS', query:'BESTIE DOYANEN HOTELS Osaka', emoji:'🛏️' }
+  ],
+  [ // Day2
+    { lat:34.6641, lng:135.5039, name:'MONDAY VIBES COFFEE', query:'MONDAY VIBES COFFEE 難波', emoji:'🍳' },
+    { lat:35.1709, lng:136.8815, name:'名古屋站', query:'名古屋駅', emoji:'🚉' },
+    { lat:35.1280, lng:136.9075, name:'熱田神宮', query:'熱田神宮', emoji:'⛩️' },
+    { lat:35.1789, lng:136.8748, name:'TSUTAYA BOOKSTORE 則武新町', query:'TSUTAYA BOOKSTORE 則武新町', emoji:'📚' },
+    { lat:35.1789, lng:136.8875, name:'円頓寺商店街', query:'円頓寺商店街', emoji:'🏮' },
+    { lat:35.1301, lng:136.9038, name:'あつたnagAya', query:'あつたnagAya', emoji:'🏮' },
+    { lat:35.1745, lng:136.9070, name:'BASE LAYER HOTEL', query:'BASE LAYER HOTEL NAGOYA NISHIKI', emoji:'🛏️' },
+    { lat:35.1712, lng:136.8845, name:'Chou de kacha', query:'Chou de kacha 名古屋駅', emoji:'🥐' },
+    { lat:35.1706, lng:136.8830, name:'Katuretu MATUMURA（晚餐）', query:'Katuretu MATUMURA 名古屋', emoji:'🍖' },
+    { lat:35.1697, lng:136.9067, name:'Parlor Imom', query:'Parlor Imom 名古屋', emoji:'☕' },
+    { lat:35.1687, lng:136.9082, name:'Alpen NAGOYA', query:'Alpen NAGOYA ナディアパーク', emoji:'⛰️' },
+    { lat:35.1690, lng:136.9086, name:'mont-bell 名古屋栄店', query:'モンベル名古屋栄店', emoji:'🎒' },
+    { lat:35.1698, lng:136.9072, name:'IEN Bake house', query:'IEN Bake house 栄', emoji:'🥯' },
+    { lat:35.1685, lng:136.9088, name:'丸善名古屋本店', query:'丸善名古屋本店', emoji:'📚' },
+    { lat:35.1660, lng:136.9100, name:'SEANT（セアン）', query:'SEANT セアン 名古屋', emoji:'🏺' },
+    { lat:35.1706, lng:136.8816, name:'驛釜棊子麵（生日晚餐）', query:'驛釜棊子麵 中央通店', emoji:'🍜' }
+  ],
+  [ // Day3
+    { lat:35.2280, lng:136.8365, name:'清洲城', query:'清洲城', emoji:'🏯' },
+    { lat:35.1698, lng:136.8970, name:'伏見町POPEYE', query:'伏見町POPEYE', emoji:'🍚' },
+    { lat:35.2010, lng:136.8863, name:'NERO', query:'NERO 庄内緑地公園', emoji:'🥖' },
+    { lat:35.1850, lng:136.8720, name:'伊奴神社', query:'伊奴神社', emoji:'⛩️' },
+    { lat:35.1596, lng:136.9014, name:'大須觀音寺', query:'大須觀音寺', emoji:'🛕' },
+    { lat:35.1590, lng:136.9010, name:'大須商店街', query:'大須商店街', emoji:'🛍️' },
+    { lat:35.1477, lng:136.9247, name:'RPM Toy & Collectables', query:'RPM Toy Collectables 名古屋', emoji:'🧸' },
+    { lat:35.1568, lng:136.9033, name:"EGORAPIN'", query:'EGORAPIN 名古屋大須', emoji:'🥯' },
+    { lat:35.1497, lng:136.9028, name:'東別院 暮らしの朝市', query:'東別院 真宗大谷派名古屋別院', emoji:'🥐' },
+    { lat:35.1578, lng:136.9028, name:'仁王門湯', query:'仁王門湯 名古屋', emoji:'♨️' }
+  ],
+  [ // Day4
+    { lat:35.1709, lng:136.8815, name:'名古屋站', query:'名古屋駅', emoji:'🚉' },
+    { lat:34.7439, lng:136.9027, name:'河和港', query:'河和港', emoji:'⛴️' },
+    { lat:34.6975, lng:136.9268, name:'日間賀島', query:'日間賀島', emoji:'🐙' },
+    { lat:34.8853, lng:136.8347, name:'常滑・招き猫通り', query:'とこなめ招き猫通り', emoji:'🐱' }
+  ],
+  [ // Day5
+    { lat:35.1709, lng:136.8815, name:'名古屋站', query:'名古屋駅', emoji:'🚉' },
+    { lat:35.3925, lng:136.9425, name:'犬山城', query:'犬山城', emoji:'🏯' },
+    { lat:35.3940, lng:136.9420, name:'三光稲荷神社', query:'三光稲荷神社', emoji:'💗' },
+    { lat:35.3782, lng:136.9418, name:'GATTO', query:'GATTO 犬山', emoji:'🍮' },
+    { lat:35.3789, lng:136.9401, name:'Hachi Cafe 犬山店', query:'ハチカフェ 犬山店', emoji:'🍮' },
+    { lat:34.8590, lng:137.0630, name:'西尾・抹茶ミュージアム', query:'抹茶ミュージアム 西条園 和く和く', emoji:'🍵' },
+    { lat:35.1685, lng:136.8823, name:'牛炙 名駅別邸（晚餐）', query:'完全個室焼肉 牛炙 名駅別邸', emoji:'🥩' }
+  ],
+  [ // Day6
+    { lat:35.1709, lng:136.8815, name:'名古屋站', query:'名古屋駅', emoji:'🚉' },
+    { lat:35.1633, lng:136.9645, name:'角角然然', query:'角角然然 覚王山', emoji:'🍙' },
+    { lat:35.1917, lng:137.0728, name:'吉卜力公園', query:'ジブリパーク', emoji:'🌳' },
+    { lat:34.8584, lng:136.8054, name:'中部國際機場', query:'中部国際空港', emoji:'♨️' }
+  ]
+];
+
+const CHECKLIST = [
+  '護照（效期6個月以上）',
+  '日幣現金 + 信用卡（有些小店僅收現金，尤其佐久島）',
+  'eSIM 或 WiFi分享器',
+  '旅遊平安險/海外醫療險',
+  '輕便後背包（適合徒步+搭船+爬坡）',
+  '防曬用品、雨具（8月末仍炎熱多雨）',
+  '行動電源',
+  '環保購物袋（伴手禮/戰利品）',
+  '舒適好走的鞋（常滑/佐久島步行較多）'
+];
+
+const SHOP_CONFIRMED = [
+  { img:'images/salomon_shoes.png', nm:'Salomon 防水登山鞋(GTX)', loc:'Salomon直營店・JR高島屋4F', memo:'防水好走，常滑/佐久島穿' },
+  { emoji:'🎒', nm:'Cotopaxi 大容量背包', loc:'Cotopaxi NAGOYA・PARCO東館1F', memo:'東海首家直營店' },
+  { emoji:'🩴', nm:'mont-bell 涼鞋', loc:'mont-bell 名古屋栄店', memo:'泡湯後、輕鬆逛街天穿' },
+  { img:'images/kodak_camera.png', nm:'Kodak PixPro 相機', loc:'Bic Camera 名古屋駅西店', memo:'車站步行範圍內' },
+  { img:'images/kathylam_gacha.jpeg', nm:'黒山 KATHY LAM 扭蛋', loc:'#C-pla 名古屋大須店', memo:'愛知人氣第一扭蛋店' },
+  { img:'images/pandorobou_plush.png', nm:'パンどろぼう 玩偶', loc:'PARCO／JR高島屋 Loft', memo:'人氣角色雜貨' },
+  { img:'images/elixir_beige.jpg', nm:'ELIXIR 防曬乳(Beige/Pink)', loc:'マツモトキヨシ 名古屋駅太閤通口店', memo:'SPF50+ PA++++，太閤通南口徒步0分' },
+  { emoji:'📚', nm:'丸善名古屋本店', loc:'榮駅8號出口徒步4分', memo:'愛知最大書店，B1F-5F共6層，必逛' },
+  { emoji:'🏺', nm:'SEANT（セアン）', loc:'矢場町駅徒步6分', memo:'藍色帳篷生活選物店，必逛' },
+  { img:'images/muji_headscrub.png', nm:'無印 植物発酵液 頭皮磨砂膏', loc:'無印良品（PARCO/車站周邊）', memo:'葡萄柚香・¥1,490/200g・液體記得託運' },
+  { img:'images/muji_sento_set.jpeg', nm:'無印 錢湯套組', loc:'無印良品', memo:'DAILY POUCH防水袋+網狀收納袋・Day3泡湯可用' },
+  { img:'images/keen_jasper.png', nm:'KEEN Jasper', loc:'好日山荘、L-Breath、ABC-MART', memo:'經典戶外休閒鞋款' }
+];
+const SHOP_BACKUP = [
+  { img:'images/asics_gel1130.png', nm:'ASICS GEL-1130', loc:'ABC-MART GRAND STAGE 栄店', memo:'約¥15,400' },
+  { img:'images/asics_gt2160_silver.png', nm:'ASICS GT-2160', loc:'ABC-MART／ASICS門市', memo:'約¥18,700' },
+  { img:'images/asics_beige.png', nm:'ASICS（米色款）', loc:'ABC-MART／ASICS門市', memo:'建議先查庫存' },
+  { img:'images/keen_boots.png', nm:'KEEN 登山鞋', loc:'好日山荘、L-Breath', memo:'與Salomon功能重疊' },
+  { img:'images/tamagotchi_shell.png', nm:'Tamagotchi 客製殼', loc:'Mandarake Nagoya', memo:'客製殼台灣蝦皮較多選擇' },
+  { img:'images/montbell_backpack.png', nm:'mont-bell Versalite 20', loc:'mont-bell 名古屋栄店', memo:'與Cotopaxi背包重疊' }
+];
+const SHOP_SOUVENIR = [
+  { img:'images/bankaku.png', nm:'坂角總本舖 海老蝦餅', loc:'JR名古屋高島屋 B1F', memo:'偏原味口味' },
+  { img:'images/butter_states.png', nm:"BUTTER STATE's", loc:'JR名古屋高島屋 B1F', memo:'限定4個入¥1,080' },
+  { img:'images/regal_de_chihiro.png', nm:'REGAL DE CHIHIRO', loc:'名古屋車站周邊／JR高島屋', memo:'名古屋在地烘焙品牌' },
+  { img:'images/nagoya_france.png', nm:'NAGOYA FRANCE PETIT', loc:'名古屋車站地下街', memo:'新發售，建議先確認貨源' },
+  { img:'images/sugar_butter_tree.png', nm:'SUGAR BUTTER TREE 抹茶', loc:'JR高島屋／名古屋PARCO', memo:'車站限定款' },
+  { img:'images/yamachan.png', nm:'世界の山ちゃん 手羽先餅乾', loc:'超市、藥妝店、機場', memo:'通路最多最好買' },
+  { img:'images/maison_du_miel.png', nm:'maison du miel「le cadeau」', loc:'JR名古屋高島屋 B1F', memo:'名古屋在地甜點品牌' }
+];
+
+const SHOP_HUBS = [
+  { lat:35.1706, lng:136.8816, name:'JR名古屋高島屋', emoji:'🏬', kw:['高島屋'] },
+  { lat:35.1648, lng:136.9068, name:'名古屋PARCO', emoji:'🛍️', kw:['PARCO'] },
+  { lat:35.1686, lng:136.9090, name:'榮商圈運動用品店', emoji:'⛰️', kw:['mont-bell','ABC-MART'] },
+  { lat:35.1712, lng:136.8798, name:'Bic Camera 名古屋駅西店', emoji:'📷', kw:['Bic Camera'] },
+  { lat:35.1590, lng:136.9010, name:'大須：#C-pla／Mandarake', emoji:'🎰', kw:['#C-pla','Mandarake'] },
+  { lat:35.1700, lng:136.8805, name:'松本清 太閤通口店', emoji:'💊', kw:['マツモトキヨシ'] },
+  { lat:35.1715, lng:136.8825, name:'名古屋車站周邊／地下街', emoji:'🚉', kw:['車站地下街','超市','藥妝店'] }
+];
+function buildShopPoints(){
+  const all = [...SHOP_CONFIRMED, ...SHOP_BACKUP, ...SHOP_SOUVENIR];
+  return SHOP_HUBS.map(hub=>({ ...hub, items: all.filter(it => hub.kw.some(k=>it.loc.includes(k))) }))
+    .filter(h=>h.items.length>0);
+}
+const SHOP_POINTS = buildShopPoints();
+
+// ---------- 美食地圖：所有麵包/甜點/玩具店（已排入行程 + 口袋清單）----------
+const FOOD_SPOTS = [
+  { name:'ぞうめし屋', emoji:'🐘', lat:34.8570, lng:137.0680, query:'ぞうめし屋 西尾', scheduled:false, cat:'餐廳', guide:'西尾市志籠谷町，西尾駅徒步12分，4.1星(675則)。味噌屋直營，招牌味噌煮込うどん、メンチカツ、抹茶拿鐵、甜甜圈。⚠️ 營業10:30-14:30／17:30-21:00分兩段，Day5抹茶博物館行程剛好卡在休息時段，若要吃晚餐段會跟牛炙名駅別邸衝突。' },
+  { name:'日々是好日 新栄店', emoji:'🍙', lat:35.1685, lng:136.9138, query:"日々是好日 新栄店", scheduled:false, cat:'餐廳', guide:'🍚飯類必看｜中区新栄1-6-10 新栄ビル1F，栄駅步行範圍，打烊14:00（限午餐）。飯糰配濃郁豬肉味噌湯定食，直球飯類代表，座位小客滿可外帶。' },
+  { name:'角角然然', emoji:'🍙', lat:35.1633, lng:136.9645, query:'角角然然 覚王山', scheduled:true, day:6, cat:'餐廳', guide:'🍚✅已排入Day6｜千種区末盛通1-15-2 壮苑覚王山1F，10:00開始，4.3星(60則)。飯糰+定食食堂，作為前往吉卜力公園途中的早午餐，跟おかしな大地同在覚王山。' },
+  { name:'大銀杏 名駅店', emoji:'🍗', lat:35.1700, lng:136.8840, query:'大銀杏 名駅店', scheduled:false, cat:'餐廳', guide:'🥩喜歡肉必看｜中村区名駅4-13-13 FGビル4F，17:30-24:00。愛知縣產錦爽どり炭火燒鳥，自家製鹽調味，串2支起點，跟Chou de kacha同在名駅商圈。' },
+  { name:'IN THIS FLAVOR', emoji:'🍔', lat:35.1650, lng:136.8990, query:'IN THIS FLAVOR 名古屋', scheduled:false, cat:'餐廳', guide:'🍔早午餐必看｜伏見／大須觀音站徒步4分。白天美式早午餐（漢堡、三明治），晚上變身酒吧配餐酒配對，剛好在Day3大須路線上。' },
+  { name:'つけ麺本丸 栄店', emoji:'🍚', lat:35.1680, lng:136.9083, query:'つけ麺本丸 栄店', scheduled:false, cat:'餐廳', guide:'🍚飯類必看｜栄駅徒步3分，マルエイガレリア1F，11:00-25:00。食べログ百名店，自家製沾麵＋品牌雞蛋吃到飽，可做卵かけご飯（蛋拌飯）。就在Day2榮商圈路線上。' },
+  { name:'おかしな大地', emoji:'🌰', lat:35.1633, lng:136.9640, query:'おかしな大地 覚王山', scheduled:false, cat:'甜點', design:true, guide:'⭐必看設計｜千種区覚王山通9-15-2，覚王山駅徒步1-3分，10:00-19:00。百年栗子甜點老店「恵那川上屋」的新業態1號店，主廚坐鎮，空間感佳，很適合職人取經。' },
+  // === 已排入行程（金色）===
+  { name:'パン芒種', emoji:'🥖', lat:35.1789, lng:136.8875, query:'パン芒種 円頓寺', scheduled:true, day:2, cat:'麵包', guide:'外觀寫著「ベビー用品のアオヤマ」，其實是麵包店，檯面上擺著剛出爐的自家酵母鄉村麵包，價格親民。' },
+  { name:"BOUL'ANGE", emoji:'🥐', lat:35.1706, lng:136.8816, query:"BOUL'ANGE JR名古屋高島屋", scheduled:true, day:2, cat:'麵包', design:true, guide:'⭐必看設計｜JR名古屋高島屋北ブロック1F，全國連鎖精品麵包店，可頌與炭色系列麵包外型設計感十足，適合觀察陳列美學。' },
+  { name:'IEN Bake house', emoji:'🥯', lat:35.1698, lng:136.9072, query:'IEN Bake house 栄', scheduled:true, day:2, cat:'麵包', design:true, guide:'⭐必看設計｜栄駅2號出口正對面，つばめパン&Milk母公司打造，柴窯貝果為招牌。清水模+木質調空間，時髦有質感，內附小餐廳。' },
+  { name:'NERO', emoji:'🥖', lat:35.2010, lng:136.8863, query:'NERO 庄内緑地公園', scheduled:true, day:3, cat:'麵包', guide:'鹽麵包專門店，外層酥脆、內餡奶油濃郁，明太子/堅果/起司口味人氣旺，每天不同時段出爐。' },
+  { name:'Chou de kacha', emoji:'🥐', lat:35.1712, lng:136.8845, query:'Chou de kacha 名古屋駅', scheduled:true, day:2, cat:'甜點', guide:'名古屋站徒步5分，僅7席吧台的泡芙專賣店，招牌堅果奶油泡芙，備長炭烘焙咖啡豆沖泡的配方咖啡。' },
+  { name:'Parlor Imom', emoji:'☕', lat:35.1697, lng:136.9067, query:'Parlor Imom 名古屋', scheduled:true, day:2, cat:'甜點', guide:'榮商圈錦二丁目的咖啡廳，適合逛街途中小憩。' },
+  { name:'GATTO', emoji:'🍮', lat:35.3782, lng:136.9418, query:'GATTO 犬山', scheduled:true, day:5, cat:'甜點', guide:'犬山城下町商店街尾端，門面低調需特地尋找。招牌馬斯卡彭起司布丁，濃郁綿密。' },
+  { name:'Hachi Cafe 犬山店', emoji:'🍮', lat:35.3789, lng:136.9401, query:'ハチカフェ 犬山店', scheduled:true, day:5, cat:'甜點', guide:'名鉄犬山駅西口1F駅直結，塔派與三明治專賣，招牌犬山限定布丁塔。' },
+  { name:'EGORAPIN\'', emoji:'🥯', lat:35.1568, lng:136.9033, query:'EGORAPIN 名古屋大須', scheduled:true, day:3, cat:'甜點', design:true, guide:'⭐必看設計｜2025年開幕的貝果咖啡廳，清水模+玻璃磚空間，相思木溫潤木紋，貝果三明治配咖啡湯品。原址曾是佛具店，櫃檯有免費線香呼應歷史。全程設計質感最完整的一間。' },
+  { name:'RPM Toy & Collectables', emoji:'🧸', lat:35.1477, lng:136.9247, query:'RPM Toy Collectables 名古屋', scheduled:true, day:3, cat:'玩具', guide:'美式復古玩具、模型與收藏品專門店，尋寶天堂。' },
+  { name:'有象無象（UZOMUZO）', emoji:'🍡', lat:35.1573, lng:136.9037, query:'有象無象 UZOMUZO 名古屋大須', scheduled:true, day:3, cat:'大須美食', guide:'大須人氣咖啡/甜點小店，上前津站9號出口徒步4分。' },
+  { name:'覚王山フルーツ大福 弁才天', emoji:'🍓', lat:35.1585, lng:136.9010, query:'覚王山フルーツ大福 弁才天 大須店', scheduled:true, day:3, cat:'大須美食', guide:'水果大福專賣，大須觀音站徒步5分。' },
+  { name:'SMASH HEAD', emoji:'🍔', lat:35.1594, lng:136.9008, query:'SMASH HEAD 名古屋大須', scheduled:true, day:3, cat:'大須美食', guide:'大須觀音站2號出口徒步1分的漢堡店。' },
+  { name:'珈琲ぶりこ', emoji:'☕', lat:35.1578, lng:136.9040, query:'珈琲ぶりこ 名古屋大須', scheduled:true, day:3, cat:'大須美食', guide:'上前津站8號出口徒步3分的咖啡廳。' },
+  { name:'喫茶ジェラシー', emoji:'☕', lat:35.1579, lng:136.9032, query:'喫茶ジェラシー 名古屋大須', scheduled:true, day:3, cat:'大須美食', guide:'上前津站8號出口徒步2分，オカモトビル2F的復古喫茶店。' },
+  { name:'maison du miel', emoji:'🍫', lat:35.1706, lng:136.8816, query:'maison du miel 名古屋', scheduled:true, day:2, cat:'伴手禮', guide:'JR名古屋高島屋B1F，名古屋在地甜點品牌「le cadeau」系列。' },
+  { name:'TSUTAYA BOOKSTORE 則武新町', emoji:'📚', lat:35.1789, lng:136.8748, query:'TSUTAYA BOOKSTORE 則武新町', scheduled:true, day:2, cat:'設計空間', design:true, guide:'⭐必看設計｜連接1、2樓的巨大書牆藝術裝置，天花板做成鏡面設計，看起來比實際更加壯觀，IG必拍等級。雖非餐飲店，但空間設計非常值得一看。' },
+  { name:'完全個室焼肉 牛炙 名駅別邸', emoji:'🥩', lat:35.1685, lng:136.8823, query:'完全個室焼肉 牛炙 名駅別邸', scheduled:true, day:5, cat:'餐廳', design:true, guide:'⭐必看設計｜✅已排入Day5晚餐｜全席完全個室，段戸牛、鳳来牛等愛知在地和牛品牌，附氣泡酒的アニバーサリーコース很適合慶祝場合。' },
+
+  // === 口袋清單（灰色・有空可順路看看）===
+  { name:'Forelsket', emoji:'☕', lat:35.1785, lng:136.8752, query:'Forelsket 名古屋 則武', scheduled:false, cat:'麵包', guide:'中村区則武1丁目，就在則武新町/円頓寺一帶。⚠️ 星期四公休，8/27剛好是週四，這次行程去不了，若有機會改期可以列入。10:00-16:00（週二~週一，週三週五週六週一）。' },
+  { name:'Hachi Cafe 鶴舞店', emoji:'🍮', lat:35.1571, lng:136.9204, query:'ハチカフェ 鶴舞店', scheduled:false, cat:'甜點', guide:'愛知縣內另一間分店，就在鶴舞線「鶴舞」站附近，剛好是Day3從荒畑→上前津途中會經過的一站，若時間充裕可以下車看看（犬山店已排入正式行程）。' },
+  { name:'titbit!（ティットビット）', emoji:'🍦', lat:35.1700, lng:136.9020, query:'titbit ティットビット 名古屋', scheduled:false, cat:'甜點', guide:'雪糕專賣，位置需出發前再查證確認。' },
+  { name:'スーリープー', emoji:'🍞', lat:35.1650, lng:136.9100, query:'スーリープー パン 名古屋', scheduled:false, cat:'麵包', guide:'麵包店，位置需出發前再查證確認。' },
+  { name:'NYU', emoji:'🥐', lat:35.1665, lng:136.9550, query:'NYU パン 千種区', scheduled:false, cat:'麵包', guide:'千種區，在東山線沿線，Day6往吉卜力公園方向若有空檔可考慮。' },
+  { name:'Tôt le Matin Boulangerie', emoji:'🥖', lat:35.1735, lng:136.9705, query:"Tot le Matin Boulangerie 一社", scheduled:false, cat:'麵包', guide:'名東區一社1-33，東山線「一社」駅徒步約5分，8:00開店。⚠️ 公休週一、週二（8/31是週一，此行程日很可能沒開）。' },
+  { name:'terre a terre', emoji:'🥯', lat:35.1830, lng:136.9280, query:'terre a terre 名古屋東区', scheduled:false, cat:'麵包', guide:'東區麵包店，靠近榮／名古屋城一帶。' },
+  { name:'ソレハサテオキ', emoji:'🥯', lat:35.1835, lng:136.9290, query:'ソレハサテオキ 名古屋', scheduled:false, cat:'麵包', guide:'東區麵包店，位置鄰近terre a terre。' },
+  { name:'Vermicular Village', emoji:'🍲', lat:35.1245, lng:136.8510, query:'VERMICULAR VILLAGE', scheduled:false, cat:'麵包', design:true, guide:'⭐必看設計｜中川區，鑄鐵鍋品牌Vermicular的複合設施，附設麵包坊，品牌調性強、空間規劃完整，很適合職人取經。需專程前往。' },
+  { name:'Papipain（ぱぴ・ぱん）', emoji:'🥖', lat:35.1255, lng:136.9705, query:'ブランジェリー ぱぴ・ぱん 名古屋', scheduled:false, cat:'麵包', guide:'天白區植田，10:00-19:00，週二三公休。' },
+  { name:'an-J', emoji:'🥐', lat:35.0700, lng:136.9770, query:'an-J パン 緑区', scheduled:false, cat:'麵包', guide:'綠區麵包店。' },
+  { name:'パンと庭', emoji:'🌿', lat:35.0830, lng:137.0630, query:'パンと庭 東郷市', scheduled:false, cat:'麵包', guide:'東鄉市，需專程前往（來回約1-1.5小時）。' },
+  { name:'F to BREAD', emoji:'🥖', lat:34.9530, lng:137.1740, query:'F to BREAD 岡崎市', scheduled:false, cat:'麵包', guide:'岡崎市，需專程前往。' },
+  { name:'SUN to F', emoji:'☀️', lat:35.0010, lng:136.9430, query:'SUN to F 大府市', scheduled:false, cat:'麵包', guide:'港區・大府市，需專程前往。' },
+  { name:'Amazing Toy Shop Gateway', emoji:'🚂', lat:35.1400, lng:136.9752, query:'Amazing Toy Shop Gateway 名古屋', scheduled:false, cat:'玩具', guide:'天白區大坪，鶴舞線「塩釜口」站，13:00-19:00。各式復古玩具、公仔收藏。' },
+  { name:'Kinder Land', emoji:'🧩', lat:35.1085, lng:136.9165, query:'Kinder Land 名古屋 南区', scheduled:false, cat:'玩具', guide:'南區城下町，名鐵「本笠寺」站，10:00-19:00。經典玩具到懷舊收藏。' },
+];
+
+function buildGuideLookup(){
+  const lookup = {};
+  DAYS.forEach(d=>{
+    (d.guide||[]).forEach(g=>{
+      const m = g.match(/<b>(.*?)<\/b>[：:]\s*(.*)/);
+      if(m) lookup[m[1].trim()] = m[2].trim();
+    });
+  });
+  return lookup;
+}
+const GUIDE_LOOKUP = buildGuideLookup();
+
+function renderStamps(){
+  const strip = document.getElementById('stampStrip');
+  strip.innerHTML = DAYS.map((d,i)=>`
+    <div class="stamp ${i===0?'active':''}" data-day="${i}">
+      <div class="seal">${d.kanji}</div>
+      <div class="lbl">${d.title.length>6? d.title.slice(0,5)+'…' : d.title}</div>
+      <div class="date">${d.date}</div>
+    </div>`).join('');
+  strip.querySelectorAll('.stamp').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      strip.querySelectorAll('.stamp').forEach(s=>s.classList.remove('active'));
+      el.classList.add('active');
+      currentDayIndex = parseInt(el.dataset.day);
+      renderDay(currentDayIndex);
+      if(currentMode==='map') renderForScope();
+    });
+  });
+}
+
+const VISIT_KEY = 'nagoya-trip-visited';
+let visitedSet = new Set();
+let visitStorageOK = true;
+
+async function loadVisited(){
+  try{
+    const raw = localStorage.getItem(VISIT_KEY);
+    visitedSet = new Set(raw ? JSON.parse(raw) : []);
+  } catch(e){ visitStorageOK = false; visitedSet = new Set(); }
+  renderDay(currentDayIndex);
+}
+async function saveVisited(){
+  if(!visitStorageOK) return;
+  try{ localStorage.setItem(VISIT_KEY, JSON.stringify([...visitedSet])); } catch(e){}
+}
+
+function renderDay(i){
+  const d = DAYS[i];
+  document.documentElement.style.setProperty('--day-accent', d.accent);
+  const itemsHtml = d.items.map((it, idx)=>{
+    const vKey = `${i}-${idx}`;
+    const isVisited = visitedSet.has(vKey);
+    return `
+    <div class="t-item${isVisited?' visited':''}" data-vkey="${vKey}">
+      <div class="t-visit-box">${CHECK_ICON}</div>
+      <div class="t-time">${it.time}</div>
+      <div class="t-rail"><div class="line"></div><div class="dot"></div></div>
+      <div class="t-card">
+        <div class="title">${it.title}</div>
+        ${it.sub? `<div class="sub">${it.sub}</div>`:''}
+        <div class="meta">
+          ${it.cost? `<span class="cost-tag">${it.cost}</span>`:''}
+          ${it.map? `<a class="map-btn" href="${mapUrl(it.map)}" target="_blank">${MAP_ICON} 導航</a>`:''}
+        </div>
+        ${it.spots? `<div class="spot-toggle" data-spot="${i}-${idx}">🍡 美食踩點清單（${it.spots.length}間）<span class="arw">▾</span></div>
+        <div class="spot-list" id="spots-${i}-${idx}">
+          ${it.spots.map(s=>`<div class="spot-item">
+            <div class="no">${s.emoji}</div>
+            <div class="info"><div class="nm">${s.nm}</div><div class="meta">${s.addr}<br>🚇 ${s.walk}</div></div>
+            <a class="go" href="${mapUrl(s.q)}" target="_blank">導航</a>
+          </div>`).join('')}
+          <div class="spot-note">💡 從大須觀音站進商店街 → 先②③ → 往東走到①④⑤，一路逛過去不用回頭，結束時剛好在上前津站（仁王門湯也在這）。<br>⚠️ 營業時間與公休日建議出發前用 Google Maps 確認。</div>
+        </div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('dayContent').innerHTML = `
+    <div class="day-hero" style="--day-accent:${d.accent};">
+      <div class="tag">DAY ${i+1} · ${d.date}</div>
+      <h2 class="serif">${d.title}</h2>
+      ${d.warn? `<div class="note-tag">⚠️ ${d.warn}</div>` : ''}
+    </div>
+    <div class="timeline">${itemsHtml}</div>
+    ${d.guide? `<div class="guide-box"><div class="gt">🎙️ 導遊筆記</div>${d.guide.map(g=>`<p>${g}</p>`).join('')}</div>` : ''}
+  `;
+  document.querySelectorAll('.t-visit-box').forEach(box=>{
+    box.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const item = box.closest('.t-item');
+      const vKey = item.dataset.vkey;
+      if(visitedSet.has(vKey)){ visitedSet.delete(vKey); item.classList.remove('visited'); }
+      else{ visitedSet.add(vKey); item.classList.add('visited'); }
+      saveVisited();
+    });
+  });
+}
+
+function renderChecklist(){
+  const wrap = document.getElementById('checklist');
+  wrap.innerHTML = CHECKLIST.map((txt,i)=>`
+    <div class="check-item" data-i="${i}">
+      <div class="box">${CHECK_ICON}</div>
+      <div class="txt">${txt}</div>
+    </div>`).join('');
+  wrap.querySelectorAll('.check-item').forEach(el=>{
+    el.addEventListener('click', ()=> el.classList.toggle('done'));
+  });
+}
+
+const SHOP_KEY = 'nagoya-trip-bought';
+let boughtSet = new Set();
+let shopStorageOK = true;
+
+async function loadBought(){
+  try{
+    const raw = localStorage.getItem(SHOP_KEY);
+    boughtSet = new Set(raw ? JSON.parse(raw) : []);
+  } catch(e){ shopStorageOK = false; boughtSet = new Set(); }
+  renderShop();
+}
+async function saveBought(){
+  if(!shopStorageOK) return;
+  try{ localStorage.setItem(SHOP_KEY, JSON.stringify([...boughtSet])); } catch(e){}
+}
+
+function shopCard(item){
+  const imgHtml = item.img
+    ? `<div class="img" style="background-image:url('${item.img}')"></div>`
+    : `<div class="img noimg">${item.emoji||'🛍️'}</div>`;
+  const isBought = boughtSet.has(item.nm);
+  return `<div class="shop-card${isBought?' bought':''}" data-nm="${item.nm.replace(/"/g,'&quot;')}">
+    <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l5 5L20 6"/></svg></div>
+    ${imgHtml}
+    <div class="body">
+      <div class="nm">${item.nm}</div>
+      <div class="loc">📍 ${item.loc}</div>
+      <div class="memo">${item.memo}</div>
+    </div>
+  </div>`;
+}
+
+function renderShopSection(elId, list, progressId){
+  const el = document.getElementById(elId);
+  el.innerHTML = list.map(shopCard).join('');
+  const done = list.filter(i=>boughtSet.has(i.nm)).length;
+  const pEl = document.getElementById(progressId);
+  if(pEl) pEl.textContent = `已買 ${done} / ${list.length} 項`;
+  el.querySelectorAll('.shop-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      const nm = card.dataset.nm;
+      if(boughtSet.has(nm)) boughtSet.delete(nm); else boughtSet.add(nm);
+      saveBought();
+      renderShop();
+    });
+  });
+}
+
+function renderShop(){
+  renderShopSection('shopConfirmed', SHOP_CONFIRMED, 'progConfirmed');
+  renderShopSection('shopBackup', SHOP_BACKUP, 'progBackup');
+  renderShopSection('shopSouvenir', SHOP_SOUVENIR, 'progSouvenir');
+}
+
+function initNav(){
+  const buttons = document.querySelectorAll('nav.bottomnav button');
+  buttons.forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      buttons.forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      document.getElementById('view-'+btn.dataset.view).classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+}
+
+let leafletMap = null;
+let mapLayer = null;
+let currentDayIndex = 0;
+let mapDayIndex = 0;
+let currentMode = 'timeline';
+
+function initMapIfNeeded(){
+  if(leafletMap) return;
+  leafletMap = L.map('tripMap', { zoomControl:true, attributionControl:true }).setView([35.0, 137.0], 9);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution:'&copy; OpenStreetMap contributors',
+    subdomains:'abc', maxZoom:19
+  }).addTo(leafletMap);
+  mapLayer = L.layerGroup().addTo(leafletMap);
+}
+
+let mapScope = 'day'; // 向下相容：由 mapDataScope 同步，供 renderMap() 內部判斷 day/all/food 使用
+let mapDataScope = 'day'; // 'day' | 'all' | 'food'
+let mapStyle = 'real'; // 'real' | 'illus'
+
+function showDetail(title, emoji, guideText, shopItems){
+  const panel = document.getElementById('mapDetail');
+  document.getElementById('mdTitle').textContent = `${emoji||''} ${title}`;
+  document.getElementById('mdGuide').innerHTML = guideText ? guideText : (shopItems && shopItems.length ? '' : '<span class="md-empty">暫無詳細攻略</span>');
+  const shopEl = document.getElementById('mdShop');
+  if(shopItems && shopItems.length){
+    shopEl.innerHTML = shopItems.map(it=>{
+      const imgHtml = it.img ? `<img src="${it.img}">` : `<div style="width:52px;height:52px;border-radius:10px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:22px;">${it.emoji||'🛍️'}</div>`;
+      return `<div class="md-shop-item">${imgHtml}<div class="md-shop-name">${it.nm}</div></div>`;
+    }).join('');
+  } else {
+    shopEl.innerHTML = '';
+  }
+  panel.classList.add('show');
+}
+
+function addMarker(p, color, isShop){
+  const star = p.design ? `<div style="position:absolute; top:-6px; right:-6px; font-size:13px; filter:drop-shadow(0 1px 2px rgba(0,0,0,.6));">⭐</div>` : '';
+  const icon = L.divIcon({
+    className:'', html:`<div style="position:relative;"><div class="trip-pin" style="width:30px;height:30px;font-size:15px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:${color};border:2px solid #1C2333;box-shadow:0 2px 6px rgba(0,0,0,.4);"><span style="transform:rotate(45deg);">${p.emoji||'📍'}</span></div>${star}</div>`,
+    iconSize:[30,30], iconAnchor:[15,30]
+  });
+  const marker = L.marker([p.lat, p.lng], { icon }).addTo(mapLayer);
+  const designTag = p.design ? `<div style="color:#E8C468; font-size:11px; font-weight:700; margin-bottom:2px;">⭐ 必看設計</div>` : '';
+  marker.bindPopup(`${designTag}<b>${p.emoji||''} ${p.name}</b>${isShop?'':`<a href="${mapUrl(p.query)}" target="_blank">📍 開啟 Google Maps 導航</a>`}`);
+  marker.on('click', ()=>{
+    if(isShop){ showDetail(p.name, p.emoji, null, p.items); }
+    else{ showDetail(p.name, p.emoji, p.guide || GUIDE_LOOKUP[p.name] || null, null); }
+  });
+  return marker;
+}
+
+function renderMap(i){
+  initMapIfNeeded();
+  mapLayer.clearLayers();
+  document.getElementById('mapDetail').classList.remove('show');
+  const latlngs = [];
+
+  if(mapScope === 'day'){
+    const d = DAYS[i];
+    const pts = MAP_POINTS[i];
+    document.getElementById('mapLegendText').textContent = `DAY ${i+1}・${d.title}　共 ${pts.length} 個地圖點位`;
+    document.querySelector('.map-legend .sw').style.background = d.accent;
+    pts.forEach(p=>{ latlngs.push([p.lat,p.lng]); addMarker(p, d.accent, false); });
+    if(latlngs.length>1){
+      L.polyline(latlngs, { color:d.accent, weight:2.5, opacity:.6, dashArray:'1,7', lineCap:'round' }).addTo(mapLayer);
+    }
+  } else if(mapScope === 'food'){
+    document.getElementById('mapLegendText').textContent = `🥖 金色＝已排入行程　⚪ 灰色＝口袋清單　⭐ = 必看設計`;
+    document.querySelector('.map-legend .sw').style.background = 'var(--gold)';
+    FOOD_SPOTS.forEach(p=>{
+      latlngs.push([p.lat,p.lng]);
+      addMarker(p, p.scheduled ? '#C9A227' : '#8A8378', false);
+    });
+  } else {
+    document.getElementById('mapLegendText').textContent = `全部景點與店家，點選圖釘查看攻略／購物清單`;
+    document.querySelector('.map-legend .sw').style.background = 'var(--gold)';
+    DAYS.forEach((d, di)=>{
+      MAP_POINTS[di].forEach(p=>{ latlngs.push([p.lat,p.lng]); addMarker(p, d.accent, false); });
+    });
+    SHOP_POINTS.forEach(hub=>{ latlngs.push([hub.lat,hub.lng]); addMarker(hub, '#E8C468', true); });
+  }
+
+  if(latlngs.length === 0) return;
+  const bounds = L.latLngBounds(latlngs);
+  leafletMap.invalidateSize();
+  leafletMap.fitBounds(bounds, { padding:[36,36], maxZoom:15 });
+  setTimeout(()=>{
+    leafletMap.invalidateSize();
+    leafletMap.fitBounds(bounds, { padding:[36,36], maxZoom:15 });
+  }, 150);
+}
+
+// ---------- Illustrated map ----------
+const ILLUS_LAYOUTS = {
+  1: [[50,45]],
+  2: [[22,30],[76,62]],
+  3: [[18,22],[58,14],[80,58]],
+  4: [[15,18],[46,12],[80,32],[56,74]],
+  5: [[12,16],[38,10],[68,20],[86,52],[50,80]],
+  6: [[10,14],[32,9],[58,16],[80,32],[64,66],[28,78]],
+};
+// 7個以上：沿S形曲線自動分佈，避免卡片重疊
+function generateSerpentine(n){
+  const pts = [];
+  const rows = Math.ceil(n/2);
+  const topPad = 9, botPad = 88;
+  const step = rows > 1 ? (botPad - topPad)/(rows - 1) : 0;
+  for(let k=0; k<n; k++){
+    const row = Math.floor(k/2);
+    const isRight = (row % 2 === 0) ? (k % 2 === 1) : (k % 2 === 0);
+    const y = topPad + row*step + (k%2===1 ? step*0.42 : 0);
+    const x = isRight ? 74 : 24;
+    pts.push([x, Math.min(y, 92)]);
+  }
+  return pts;
+}
+function illusLayoutFor(n){
+  if(n <= 6) return ILLUS_LAYOUTS[n] || ILLUS_LAYOUTS[1];
+  return generateSerpentine(n);
+}
+function svgPathFromPoints(pts, w, h){
+  if(pts.length < 2) return '';
+  const abs = pts.map(p=>[p[0]/100*w, p[1]/100*h]);
+  let d = `M ${abs[0][0]} ${abs[0][1]}`;
+  for(let i=1;i<abs.length;i++){
+    const [x0,y0] = abs[i-1], [x1,y1] = abs[i];
+    const mx = (x0+x1)/2, my = (y0+y1)/2;
+    d += ` Q ${mx} ${y0}, ${mx} ${my} T ${x1} ${y1}`;
+  }
+  return d;
+}
+const TRIP_KEY_NAMES = ['BESTIE - DOYANEN HOTELS','熱田神宮','大須觀音寺','日間賀島','犬山城','吉卜力公園'];
+function buildTripOverview(){
+  return DAYS.map((d,i)=>{
+    const pt = MAP_POINTS[i].find(p=>p.name===TRIP_KEY_NAMES[i]) || MAP_POINTS[i][0];
+    return Object.assign({}, pt, { dayIndex:i, accent:d.accent, dayTitle:d.title });
+  });
+}
+const TRIP_OVERVIEW = buildTripOverview();
+
+function renderTripOverview(){
+  const container = document.getElementById('illusMap');
+  const H = 760;
+  container.style.minHeight = H + 'px';
+  const W = container.clientWidth || 360;
+  const layout = generateSerpentine(TRIP_OVERVIEW.length);
+
+  document.getElementById('illusDayBadge').textContent = '名古屋六日獨旅・全程總覽';
+  document.getElementById('illusDayHeader').classList.add('show');
+
+  const bgSvg = `<svg class="illus-bg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <filter id="paperNoiseTrip"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise"/><feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.23  0 0 0 0 0.18  0 0 0 0 0.12  0 0 0 0.035 0"/></filter>
+    <rect width="${W}" height="${H}" filter="url(#paperNoiseTrip)"/>
+    <ellipse cx="${W*0.15}" cy="${H*0.1}" rx="${W*0.35}" ry="${H*0.12}" fill="#B8A876" opacity="0.10"/>
+    <ellipse cx="${W*0.85}" cy="${H*0.3}" rx="${W*0.3}" ry="${H*0.15}" fill="#8FA888" opacity="0.10"/>
+    <ellipse cx="${W*0.2}" cy="${H*0.65}" rx="${W*0.28}" ry="${H*0.18}" fill="#B8A876" opacity="0.08"/>
+    <ellipse cx="${W*0.8}" cy="${H*0.85}" rx="${W*0.32}" ry="${H*0.14}" fill="#9BB0C7" opacity="0.10"/>
+    <text x="${W*0.08}" y="${H*0.92}" font-size="20" opacity="0.4">🌳</text>
+    <text x="${W*0.88}" y="${H*0.15}" font-size="18" opacity="0.35">☁️</text>
+    <text x="${W*0.05}" y="${H*0.48}" font-size="16" opacity="0.32">🌿</text>
+  </svg>`;
+
+  const abs = layout.map(p=>[p[0]/100*W, p[1]/100*H]);
+  let segs = '';
+  for(let k=0;k<abs.length-1;k++){
+    const [x0,y0]=abs[k], [x1,y1]=abs[k+1];
+    const mx=(x0+x1)/2;
+    segs += `<path d="M ${x0} ${y0} L ${mx} ${y0} L ${mx} ${y1} L ${x1} ${y1}" fill="none" stroke="#5A4A32" stroke-width="1.6" opacity="0.55"/>`;
+  }
+  const dots = abs.slice(1,-1).map(([x,y])=>`<rect x="${x-3}" y="${y-3}" width="6" height="6" fill="#B23A2E" stroke="#3A2E1E" stroke-width="0.6"/>`).join('');
+  const svgPaths = `<svg class="illus-paths" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${segs}${dots}</svg>`;
+
+  const nodesHtml = TRIP_OVERVIEW.map((p, idx)=>{
+    const [x,y] = layout[idx];
+    return `<div class="illus-node" style="left:${x}%; top:${y}%;" data-idx="${idx}">
+      <div class="trip-day-tag" style="background:${p.accent};">DAY ${idx+1}</div>
+      <div class="in-icon">${p.emoji||'📍'}</div>
+      <div class="in-card"><div class="in-name">${p.name}</div><div class="in-note">${p.dayTitle}</div></div>
+    </div>`;
+  }).join('');
+
+  container.innerHTML = bgSvg + svgPaths + nodesHtml;
+
+  container.querySelectorAll('.illus-node').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const p = TRIP_OVERVIEW[parseInt(el.dataset.idx)];
+      showDetail(p.name, p.emoji, GUIDE_LOOKUP[p.name] || null, null);
+      document.getElementById('mapDetail').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    });
+  });
+}
+
+function renderIllustratedMap(i){
+  const d = DAYS[i];
+  const pts = MAP_POINTS[i] || [];
+  const container = document.getElementById('illusMap');
+  const H = pts.length > 6 ? Math.max(560, Math.ceil(pts.length/2) * 132) : 520;
+  container.style.minHeight = H + 'px';
+  const W = container.clientWidth || 360;
+  const layout = illusLayoutFor(pts.length);
+
+  const badgeEl = document.getElementById('illusDayBadge');
+  badgeEl.textContent = `DAY ${i+1} · ${d.title}`;
+  document.getElementById('illusDayHeader').classList.add('show');
+
+  const bgSvg = `<svg class="illus-bg" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+    <filter id="paperNoise${i}"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise"/><feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.23  0 0 0 0 0.18  0 0 0 0 0.12  0 0 0 0.035 0"/></filter>
+    <rect width="${W}" height="${H}" filter="url(#paperNoise${i})"/>
+    <ellipse cx="${W*0.15}" cy="${H*0.1}" rx="${W*0.35}" ry="${H*0.12}" fill="#B8A876" opacity="0.10"/>
+    <ellipse cx="${W*0.85}" cy="${H*0.3}" rx="${W*0.3}" ry="${H*0.15}" fill="#8FA888" opacity="0.10"/>
+    <ellipse cx="${W*0.2}" cy="${H*0.65}" rx="${W*0.28}" ry="${H*0.18}" fill="#B8A876" opacity="0.08"/>
+    <ellipse cx="${W*0.8}" cy="${H*0.85}" rx="${W*0.32}" ry="${H*0.14}" fill="#9BB0C7" opacity="0.10"/>
+    <text x="${W*0.08}" y="${H*0.92}" font-size="20" opacity="0.4">🌳</text>
+    <text x="${W*0.88}" y="${H*0.15}" font-size="18" opacity="0.35">☁️</text>
+    <text x="${W*0.05}" y="${H*0.48}" font-size="16" opacity="0.32">🌿</text>
+  </svg>`;
+
+  let svgPaths = '';
+  if(pts.length > 1){
+    const abs = layout.map(p=>[p[0]/100*W, p[1]/100*H]);
+    let segs = '';
+    for(let k=0;k<abs.length-1;k++){
+      const [x0,y0]=abs[k], [x1,y1]=abs[k+1];
+      const mx=(x0+x1)/2;
+      segs += `<path d="M ${x0} ${y0} L ${mx} ${y0} L ${mx} ${y1} L ${x1} ${y1}" fill="none" stroke="#5A4A32" stroke-width="1.6" opacity="0.55"/>`;
+    }
+    const dots = abs.slice(1,-1).map(([x,y])=>`<rect x="${x-3}" y="${y-3}" width="6" height="6" fill="#B23A2E" stroke="#3A2E1E" stroke-width="0.6"/>`).join('');
+    svgPaths = `<svg class="illus-paths" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">${segs}${dots}</svg>`;
+  }
+
+  const nodesHtml = pts.map((p, idx)=>{
+    const [x,y] = layout[idx];
+    return `<div class="illus-node" style="left:${x}%; top:${y}%;" data-day="${i}" data-idx="${idx}">
+      <div class="in-icon">${p.emoji||'📍'}</div>
+      <div class="in-card"><div class="in-name">${p.name}</div></div>
+    </div>`;
+  }).join('');
+
+  container.innerHTML = pts.length ? (bgSvg + svgPaths + nodesHtml) : `<div class="illus-empty">這天沒有地圖點位</div>`;
+
+  container.querySelectorAll('.illus-node').forEach(el=>{
+    el.addEventListener('click', ()=>{
+      const p = MAP_POINTS[i][parseInt(el.dataset.idx)];
+      showDetail(p.name, p.emoji, GUIDE_LOOKUP[p.name] || null, null);
+      document.getElementById('mapDetail').scrollIntoView({ behavior:'smooth', block:'nearest' });
+    });
+  });
+}
+
+function setMode(mode){
+  currentMode = mode;
+  document.getElementById('btnTimeline').classList.toggle('active', mode==='timeline');
+  document.getElementById('btnMap').classList.toggle('active', mode==='map');
+  document.getElementById('dayContent').style.display = mode==='timeline' ? 'block':'none';
+  document.getElementById('mapWrap').classList.toggle('active', mode==='map');
+  if(mode==='map') renderForScope();
+}
+
+function renderForScope(){
+  document.getElementById('tripMap').style.display = 'block';
+  document.querySelector('.map-legend').style.display = 'flex';
+  document.getElementById('mapDetail').classList.remove('show');
+
+  const chipsEl = document.getElementById('mapDayChips');
+  chipsEl.style.display = (mapDataScope === 'day') ? 'flex' : 'none';
+
+  mapScope = mapDataScope;
+  renderMap(mapDayIndex);
+}
+
+function buildMapDayChips(){
+  const chipsEl = document.getElementById('mapDayChips');
+  chipsEl.innerHTML = '';
+  DAYS.forEach((d, i)=>{
+    const chip = document.createElement('div');
+    chip.className = 'day-chip' + (i===mapDayIndex ? ' active' : '');
+    chip.style.background = (i===mapDayIndex) ? d.accent : '';
+    chip.innerHTML = `<span class="dc-dot" style="background:${d.accent};"></span>Day${i+1}`;
+    chip.addEventListener('click', ()=>{
+      mapDayIndex = i;
+      buildMapDayChips();
+      renderForScope();
+    });
+    chipsEl.appendChild(chip);
+  });
+}
+
+document.getElementById('btnTimeline').addEventListener('click', ()=> setMode('timeline'));
+document.getElementById('btnMap').addEventListener('click', ()=>{ setMode('map'); buildMapDayChips(); });
+
+const MAP_MODE_BTNS = ['mapModeDay','mapModeAll','mapModeFood'];
+function setMapDataScope(scope){
+  mapDataScope = scope;
+  const idMap = { day:'mapModeDay', all:'mapModeAll', food:'mapModeFood' };
+  MAP_MODE_BTNS.forEach(id=> document.getElementById(id).classList.toggle('active', id===idMap[scope]));
+  renderForScope();
+}
+document.getElementById('mapModeDay').addEventListener('click', ()=> setMapDataScope('day'));
+document.getElementById('mapModeAll').addEventListener('click', ()=> setMapDataScope('all'));
+document.getElementById('mapModeFood').addEventListener('click', ()=> setMapDataScope('food'));
+
+
+const WMO = {
+  0:['☀️','晴朗'],1:['🌤️','晴時多雲'],2:['⛅','多雲'],3:['☁️','陰天'],
+  45:['🌫️','霧'],48:['🌫️','霧凇'],
+  51:['🌦️','毛毛雨'],53:['🌦️','毛毛雨'],55:['🌧️','毛毛雨'],
+  61:['🌧️','小雨'],63:['🌧️','中雨'],65:['🌧️','大雨'],
+  80:['🌦️','陣雨'],81:['🌧️','陣雨'],82:['⛈️','強陣雨'],
+  95:['⛈️','雷雨'],96:['⛈️','雷雨'],99:['⛈️','雷雨']
+};
+function wmoInfo(code){ return WMO[code] || ['🌡️','—']; }
+
+async function loadWeather(){
+  try{
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=35.1815&longitude=136.9066&current=temperature_2m,weather_code&daily=temperature_2m_max,temperature_2m_min,weather_code,precipitation_probability_max&timezone=Asia%2FTokyo&forecast_days=16';
+    const res = await fetch(url);
+    if(!res.ok) throw new Error('weather fetch failed');
+    const data = await res.json();
+
+    const cur = data.current;
+    const [cIcon] = wmoInfo(cur.weather_code);
+    document.querySelector('#weatherBox .wicon').textContent = cIcon;
+    document.querySelector('#weatherBox .wtemp').textContent = Math.round(cur.temperature_2m) + '°C';
+
+    const tripDates = ['2026-08-26','2026-08-27','2026-08-28','2026-08-29','2026-08-30','2026-08-31'];
+    const idxMap = data.daily.time.map((t,i)=>({t,i}));
+    const strip = document.getElementById('weatherStrip');
+    const matched = tripDates.map(td => idxMap.find(x=>x.t===td)).filter(Boolean);
+
+    if(matched.length > 0){
+      strip.innerHTML = matched.map(m=>{
+        const i = m.i;
+        const [icon] = wmoInfo(data.daily.weather_code[i]);
+        const hi = Math.round(data.daily.temperature_2m_max[i]);
+        const lo = Math.round(data.daily.temperature_2m_min[i]);
+        const pop = data.daily.precipitation_probability_max[i];
+        const label = m.t.slice(8,10)+'日';
+        return `<div class="wday"><div>${label}</div><div class="wd-icon">${icon}</div><div class="wd-temp">${hi}°/${lo}°</div><div class="wd-temp">💧${pop}%</div></div>`;
+      }).join('');
+    } else {
+      strip.innerHTML = `<div class="weather-fallback">尚未進入16天預報範圍，8月名古屋平均28-33°C、濕度高，記得防曬防雨 ☀️</div>`;
+    }
+  } catch(e){
+    document.querySelector('#weatherBox .wtemp').textContent = '無法載入';
+    document.getElementById('weatherStrip').innerHTML = `<div class="weather-fallback">天氣資料載入失敗，8月名古屋平均28-33°C，濕度高</div>`;
+  }
+}
+loadWeather().catch(()=>{});
+
+const EXP_KEY = 'nagoya-trip-expenses';
+let expenses = [];
+let storageAvailable = true;
+
+async function loadExpenses(){
+  try{
+    const raw = localStorage.getItem(EXP_KEY);
+    expenses = raw ? JSON.parse(raw) : [];
+  } catch(e){
+    storageAvailable = false;
+    document.getElementById('expSyncNote').textContent = '⚠️ 此瀏覽器無法儲存資料，重新整理頁面記錄會消失';
+  }
+  renderExpenses();
+}
+
+async function saveExpenses(){
+  if(!storageAvailable) return;
+  try{
+    localStorage.setItem(EXP_KEY, JSON.stringify(expenses));
+  } catch(e){ /* ignore, keep in-memory */ }
+}
+
+const CAT_ICON = { '交通':'🚃','餐飲':'🍜','購物':'🛍️','門票':'🎫','住宿':'🛏️','其他':'📌' };
+
+function renderExpenses(){
+  const list = document.getElementById('expList');
+  const total = expenses.reduce((s,e)=>s+e.amt, 0);
+  document.getElementById('expTotal').textContent = total.toLocaleString();
+  if(expenses.length === 0){
+    list.innerHTML = '<div class="exp-empty">還沒有記錄，出發後隨手記一筆吧！</div>';
+    return;
+  }
+  list.innerHTML = expenses.slice().reverse().map((e, ri)=>{
+    const i = expenses.length - 1 - ri;
+    return `<div class="exp-item">
+      <div class="ei-l"><div class="ei-name">${e.name}</div><div class="ei-cat">${CAT_ICON[e.cat]||'📌'} ${e.cat}</div></div>
+      <div class="ei-r"><div class="ei-amt">${e.amt.toLocaleString()}</div><button class="exp-del" data-i="${i}">✕</button></div>
+    </div>`;
+  }).join('');
+  list.querySelectorAll('.exp-del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      expenses.splice(parseInt(btn.dataset.i), 1);
+      saveExpenses();
+      renderExpenses();
+    });
+  });
+}
+
+document.getElementById('expAddBtn').addEventListener('click', ()=>{
+  const nameEl = document.getElementById('expName');
+  const amtEl = document.getElementById('expAmt');
+  const catEl = document.getElementById('expCat');
+  const name = nameEl.value.trim();
+  const amt = parseFloat(amtEl.value);
+  if(!name || !amt || amt<=0){ nameEl.focus(); return; }
+  expenses.push({ name, amt, cat:catEl.value, t:Date.now() });
+  saveExpenses();
+  renderExpenses();
+  nameEl.value=''; amtEl.value='';
+  nameEl.focus();
+});
+
+loadExpenses().catch(()=>{});
+
+document.addEventListener('click', (e)=>{
+  const btn = e.target.closest('.spot-toggle');
+  if(!btn) return;
+  const list = document.getElementById('spots-' + btn.dataset.spot);
+  if(!list) return;
+  list.classList.toggle('open');
+  btn.classList.toggle('open');
+});
+
+renderStamps();
+renderDay(0);
+renderChecklist();
+buildMapDayChips();
+loadBought().catch(()=>{});
+loadVisited().catch(()=>{});
+initNav();
+</script>
+</body>
+</html>
